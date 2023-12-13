@@ -1,4 +1,4 @@
-// Generated from e://School//3//Programmeren 3//lsp-sample//src//ts//g4//MyLanguage.g4 by ANTLR 4.13.1
+// Generated from /home/dave/Desktop/Prog3/david.pietrzak/src/g4/MyLanguage.g4 by ANTLR 4.13.1
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;

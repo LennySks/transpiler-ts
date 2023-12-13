@@ -12,7 +12,6 @@
     "@types/jest": "^28.1.1",
     "@typescript-eslint/eslint-plugin": "^5.36.1",
     "@typescript-eslint/parser": "^5.36.1",
-    "antlr4ts-cli": "^0.5.0-alpha.4",
     "babel-jest": "^28.0.0",
     "eslint": "^8.23.0",
     "jest": "^28.1.3",
@@ -23,9 +22,11 @@
     "build": "tsc",
     "test": "jest",
     "antlr4ts": "antlr4ts -visitor /src/ts/g4/MyLanguage.g4",
-    "antlr": "cd src/g4 && pwd"
+    "antlrWin": "cd src/g4 && pwd",
+    "antlr": "cd src/g4 && java -cp /lib/antlr-4.13.1-complete.jar org.antlr.v4.Tool -o ../ts/generated -visitor -Dlanguage=TypeScript MyLanguage.g4"
   },
   "dependencies": {
-    "antlr4ts": "^0.5.0-alpha.4"
+    "antlr4": "^4.13.1-patch-1",
+    "prettier": "^3.1.1"
   }
 }
