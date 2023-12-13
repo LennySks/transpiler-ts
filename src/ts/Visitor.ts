@@ -1,13 +1,13 @@
-import MyLanguageVisitor from "./generated/MyLanguageVisitor";
+// import MyLanguageVisitor from "./generated/MyLanguageVisitor";
 
-export default class Visitor extends MyLanguageVisitor<string> {
-  visitClassDeclaration(ctx) {
-    console.log("visitClassDeclaration");
-    return super.visitClassDeclaration(ctx);
-  }
+// export default class Visitor extends MyLanguageVisitor<string> {
+//     visitClassDeclaration = (ctx: any): string => {
+//         console.log('visitClassDeclaration')
+//         return super.visitClassDeclaration(ctx)
+//     }
 
-  visitMemberDeclaration(ctx) {
-    console.log("visitMemberDeclaration");
-    return super.visitMemberDeclaration(ctx);
-  }
-}
+//     visitMemberDeclaration = (ctx: any): string => {
+//         console.log('visitMemberDeclaration')
+//         return super.visitMemberDeclaration(ctx)
+//     }
+// }

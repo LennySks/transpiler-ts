@@ -1,5 +1,11 @@
-import { f } from '../src/ts'
+import { parseSourceCode } from "../src/ts";
 
-test('f should return 42', (): void => {
-    expect(f()).toBe(42)
-})
+test("parseSourceCode should work", (): void => {
+  parseSourceCode(sourceCode);
+});
+
+const sourceCode = `
+public class Hello {
+
+}
+`;

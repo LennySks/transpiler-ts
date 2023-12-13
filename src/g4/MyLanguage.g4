@@ -12,7 +12,7 @@ memberDeclaration
     ;
 
 variableDeclaration
-    :   type ID '=' ID ';' 
+    :   type ID '=' (NUMBER | ID) ';' 
     |   type ID ';'
     ;
 
@@ -53,8 +53,9 @@ argumentList
     :   literal (',' literal)*
     ;
 
-ID: [a-zA-Z_][a-zA-Z_0-9]* ;
 NUMBER: [0-9]+ ;
+ID: [a-zA-Z]+ ;
+
 STRING: '"' .*? '"' ;
 BOOLEAN: 'true' | 'false' ;
 WS: [ \t\n\r]+ -> skip ;
