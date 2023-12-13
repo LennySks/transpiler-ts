@@ -12,8 +12,8 @@ memberDeclaration
     ;
 
 variableDeclaration
-    :   type ID '=' literal ';' 
-    |   type ID '=' literal ';'
+    :   type ID '=' ID ';' 
+    |   type ID ';'
     ;
 
 type
