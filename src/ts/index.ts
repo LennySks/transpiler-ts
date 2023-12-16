@@ -12,16 +12,24 @@ export function parseSourceCode(input: string) {
   const parser = new MyLanguageParser(tokens);
   const context = parser.classDeclaration();
   console.log(context.toStringTree(parser.ruleNames, parser));
-  //   parser.buildParseTrees = true;
-  //   const tree = parser.();
-  // const visitor = new Visitor()
-  // visitor.visitClassDeclaration(context)
 }
 
-// const sourceCode = fs.readFile("src/ts/myLanguage.ts");
 const sourceCode = `
 class MyLanguage {
   int myNumber = 10;
+  string myString = "Hello, world!";
+  boolean myBoolean = true;
+
+  function myFunction(int a, string b, boolean c) {
+      myNumber = a;
+      myString = b;
+      myBoolean = c;
+  }
+
+  myFunction(20, "Goodbye, world!", false);
+
+  <MyComponent>
+      "This is a JSX component"
+  </MyComponent>
 }
 `;
-parseSourceCode(sourceCode);

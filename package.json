@@ -21,12 +21,13 @@
   "scripts": {
     "build": "tsc",
     "test": "jest",
-    "antlr4ts": "antlr4ts -visitor /src/ts/g4/MyLanguage.g4",
+    "antlr4ts": "antlr4ts -visitor ./src/g4/MyLanguage.g4 -o ./src/ts/antlr4ts/",
     "antlrWin": "cd src/g4 && pwd",
     "antlr": "cd src/g4 && java -cp /lib/antlr-4.13.1-complete.jar org.antlr.v4.Tool -o ../ts/generated -visitor -Dlanguage=TypeScript MyLanguage.g4"
   },
   "dependencies": {
     "antlr4": "^4.13.1-patch-1",
+    "antlr4ts": "^0.5.0-alpha.4",
     "prettier": "^3.1.1"
   }
 }
