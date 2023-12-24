@@ -9,10 +9,13 @@ import { VariableDeclarationContext } from "./MyLanguageParser";
 import { TypeContext } from "./MyLanguageParser";
 import { FunctionDeclarationContext } from "./MyLanguageParser";
 import { FunctionInvocationContext } from "./MyLanguageParser";
+import { FunctionVarAssignmentContext } from "./MyLanguageParser";
+import { ParameterContext } from "./MyLanguageParser";
+import { ParameterListContext } from "./MyLanguageParser";
 import { JsxContext } from "./MyLanguageParser";
 import { JsxContentContext } from "./MyLanguageParser";
 import { LiteralContext } from "./MyLanguageParser";
-import { ParameterListContext } from "./MyLanguageParser";
+import { BooleanExpressionContext } from "./MyLanguageParser";
 import { ArgumentListContext } from "./MyLanguageParser";
 
 
@@ -82,6 +85,36 @@ export default class MyLanguageListener extends ParseTreeListener {
 	 */
 	exitFunctionInvocation?: (ctx: FunctionInvocationContext) => void;
 	/**
+	 * Enter a parse tree produced by `MyLanguageParser.functionVarAssignment`.
+	 * @param ctx the parse tree
+	 */
+	enterFunctionVarAssignment?: (ctx: FunctionVarAssignmentContext) => void;
+	/**
+	 * Exit a parse tree produced by `MyLanguageParser.functionVarAssignment`.
+	 * @param ctx the parse tree
+	 */
+	exitFunctionVarAssignment?: (ctx: FunctionVarAssignmentContext) => void;
+	/**
+	 * Enter a parse tree produced by `MyLanguageParser.parameter`.
+	 * @param ctx the parse tree
+	 */
+	enterParameter?: (ctx: ParameterContext) => void;
+	/**
+	 * Exit a parse tree produced by `MyLanguageParser.parameter`.
+	 * @param ctx the parse tree
+	 */
+	exitParameter?: (ctx: ParameterContext) => void;
+	/**
+	 * Enter a parse tree produced by `MyLanguageParser.parameterList`.
+	 * @param ctx the parse tree
+	 */
+	enterParameterList?: (ctx: ParameterListContext) => void;
+	/**
+	 * Exit a parse tree produced by `MyLanguageParser.parameterList`.
+	 * @param ctx the parse tree
+	 */
+	exitParameterList?: (ctx: ParameterListContext) => void;
+	/**
 	 * Enter a parse tree produced by `MyLanguageParser.jsx`.
 	 * @param ctx the parse tree
 	 */
@@ -112,15 +145,15 @@ export default class MyLanguageListener extends ParseTreeListener {
 	 */
 	exitLiteral?: (ctx: LiteralContext) => void;
 	/**
-	 * Enter a parse tree produced by `MyLanguageParser.parameterList`.
+	 * Enter a parse tree produced by `MyLanguageParser.booleanExpression`.
 	 * @param ctx the parse tree
 	 */
-	enterParameterList?: (ctx: ParameterListContext) => void;
+	enterBooleanExpression?: (ctx: BooleanExpressionContext) => void;
 	/**
-	 * Exit a parse tree produced by `MyLanguageParser.parameterList`.
+	 * Exit a parse tree produced by `MyLanguageParser.booleanExpression`.
 	 * @param ctx the parse tree
 	 */
-	exitParameterList?: (ctx: ParameterListContext) => void;
+	exitBooleanExpression?: (ctx: BooleanExpressionContext) => void;
 	/**
 	 * Enter a parse tree produced by `MyLanguageParser.argumentList`.
 	 * @param ctx the parse tree

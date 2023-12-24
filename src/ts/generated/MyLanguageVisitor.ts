@@ -9,10 +9,13 @@ import { VariableDeclarationContext } from "./MyLanguageParser";
 import { TypeContext } from "./MyLanguageParser";
 import { FunctionDeclarationContext } from "./MyLanguageParser";
 import { FunctionInvocationContext } from "./MyLanguageParser";
+import { FunctionVarAssignmentContext } from "./MyLanguageParser";
+import { ParameterContext } from "./MyLanguageParser";
+import { ParameterListContext } from "./MyLanguageParser";
 import { JsxContext } from "./MyLanguageParser";
 import { JsxContentContext } from "./MyLanguageParser";
 import { LiteralContext } from "./MyLanguageParser";
-import { ParameterListContext } from "./MyLanguageParser";
+import { BooleanExpressionContext } from "./MyLanguageParser";
 import { ArgumentListContext } from "./MyLanguageParser";
 
 
@@ -61,6 +64,24 @@ export default class MyLanguageVisitor<Result> extends ParseTreeVisitor<Result> 
 	 */
 	visitFunctionInvocation?: (ctx: FunctionInvocationContext) => Result;
 	/**
+	 * Visit a parse tree produced by `MyLanguageParser.functionVarAssignment`.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	visitFunctionVarAssignment?: (ctx: FunctionVarAssignmentContext) => Result;
+	/**
+	 * Visit a parse tree produced by `MyLanguageParser.parameter`.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	visitParameter?: (ctx: ParameterContext) => Result;
+	/**
+	 * Visit a parse tree produced by `MyLanguageParser.parameterList`.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	visitParameterList?: (ctx: ParameterListContext) => Result;
+	/**
 	 * Visit a parse tree produced by `MyLanguageParser.jsx`.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -79,11 +100,11 @@ export default class MyLanguageVisitor<Result> extends ParseTreeVisitor<Result> 
 	 */
 	visitLiteral?: (ctx: LiteralContext) => Result;
 	/**
-	 * Visit a parse tree produced by `MyLanguageParser.parameterList`.
+	 * Visit a parse tree produced by `MyLanguageParser.booleanExpression`.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	visitParameterList?: (ctx: ParameterListContext) => Result;
+	visitBooleanExpression?: (ctx: BooleanExpressionContext) => Result;
 	/**
 	 * Visit a parse tree produced by `MyLanguageParser.argumentList`.
 	 * @param ctx the parse tree
