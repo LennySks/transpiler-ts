@@ -21,7 +21,7 @@ export default class Visitor extends MyLanguageVisitor<string> {
     // Access the type context and handle type-specific logic if needed
     const typeContext: TypeContext | undefined = ctx.type_();
     if (typeContext) {
-      console.log("Type:", typeContext);
+      console.log("Type:", typeContext.getText());
     }
 
     // Handle variable-specific logic if needed
