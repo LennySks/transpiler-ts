@@ -1,77 +1,61 @@
 grammar MyLanguage;
 
-classDeclaration
-    :   'class' ID '{' memberDeclaration* '}'
-    ;
+file: classDeclaration EOF;
 
-memberDeclaration
-    :   variableDeclaration
-    |   functionDeclaration
-    |   functionInvocation
-    |   jsx
-    ;
+classDeclaration: 'class' ID '{' memberDeclaration* '}';
 
-variableDeclaration
-    :   type ID '=' (STRING | NUMBER | BOOLEAN) ';' 
-    |   type ID ';'
-    ;
+memberDeclaration:
+	variableDeclaration
+	| functionDeclaration
+	| functionInvocation
+	| jsx;
 
-type
-    :   'int'
-    |   'string'
-    |   'boolean'
-    ;
+variableDeclaration: type ID '=' expression ';' | type ID ';';
 
-functionDeclaration
-    :   'function' ID '(' parameterList? ')' '{' (variableDeclaration | functionVarAssignment)* '}'
-    ;
+type: 'int' | 'string' | 'boolean';
 
-functionInvocation
-    :   ID '(' argumentList? ')' ';'
-    ;
+expression:
+	'(' expression ')'
+	| expression ('*' | '/' | '%') expression
+	| expression ('+' | '-') expression
+	| expression ('<' | '>' | '<=' | '>=') expression
+	| expression ('==' | '!=') expression
+	| expression ('&&' | '||') expression
+	| expression '?' expression ':' expression
+	| ID
+	| NUMBER
+	| STRING
+	| BOOLEAN;
 
-functionVarAssignment
-    :   ID '=' (ID | NUMBER | BOOLEAN) ';'
-    ;
+functionDeclaration:
+	'function' ID '(' parameterList? ')' '{' (
+		variableDeclaration
+		| functionVarAssignment
+		| functionInvocation
+		| jsx
+	)* '}';
 
-parameter
-    :   type ID
-    ;
+functionInvocation: ID '(' argumentList? ')' ';';
 
-parameterList
-    :   parameter (',' parameter)*
-    ;
+functionVarAssignment: ID '=' expression ';';
 
-jsx
-    :   '<' ID '>' jsxContent '</' ID '>'
-    ;
+parameter: type ID;
 
-jsxContent
-    :   jsx
-    |   STRING
-    ;
+parameterList: parameter (',' parameter)*;
 
-literal
-    :   NUMBER
-    |   STRING
-    |   BOOLEAN
-    ;
+jsx: '<' ID '>' jsxContent '</' ID '>';
 
-BOOLEAN 
-    :   'true'
-    |   'false'
-    ;
+jsxContent: jsx | STRING;
 
-booleanExpression
-    : BOOLEAN
-    ;
+literal: NUMBER | STRING | BOOLEAN;
 
-argumentList
-    :   literal (',' literal)*
-    |   booleanExpression
-    ;
+BOOLEAN: 'true' | 'false';
 
-ID: [a-zA-Z]+ ;
-NUMBER: [0-9]+ ;
-STRING: '"' ( ~["\\] | '\\' . )* '"';
-WS: [ \t\n\r]+ -> skip ;
+booleanExpression: BOOLEAN;
+
+argumentList: literal (',' literal)* | booleanExpression;
+
+ID: [a-zA-Z]+;
+NUMBER: [0-9]+;
+STRING: '"' ( ~["\\] | '\\' .)* '"';
+WS: [ \t\n\r]+ -> skip;

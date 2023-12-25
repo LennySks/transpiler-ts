@@ -1,0 +1,5 @@
+class MyLanguage {
+  int myNumber = 10;
+  string myString = "Hello, world!";
+  boolean myBoolean = true;
+}

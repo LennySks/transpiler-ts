@@ -1,14 +1,12 @@
-// Generated from ./src/g4/MyLanguage.g4 by ANTLR 4.13.1
+// Generated from .//src//g4//MyLanguage.g4 by ANTLR 4.13.1
 
 import {ParseTreeListener} from "antlr4";
 
 
-import { FileContext } from "./MyLanguageParser";
 import { ClassDeclarationContext } from "./MyLanguageParser";
 import { MemberDeclarationContext } from "./MyLanguageParser";
 import { VariableDeclarationContext } from "./MyLanguageParser";
 import { TypeContext } from "./MyLanguageParser";
-import { ExpressionContext } from "./MyLanguageParser";
 import { FunctionDeclarationContext } from "./MyLanguageParser";
 import { FunctionInvocationContext } from "./MyLanguageParser";
 import { FunctionVarAssignmentContext } from "./MyLanguageParser";
@@ -26,16 +24,6 @@ import { ArgumentListContext } from "./MyLanguageParser";
  * `MyLanguageParser`.
  */
 export default class MyLanguageListener extends ParseTreeListener {
-	/**
-	 * Enter a parse tree produced by `MyLanguageParser.file`.
-	 * @param ctx the parse tree
-	 */
-	enterFile?: (ctx: FileContext) => void;
-	/**
-	 * Exit a parse tree produced by `MyLanguageParser.file`.
-	 * @param ctx the parse tree
-	 */
-	exitFile?: (ctx: FileContext) => void;
 	/**
 	 * Enter a parse tree produced by `MyLanguageParser.classDeclaration`.
 	 * @param ctx the parse tree
@@ -76,16 +64,6 @@ export default class MyLanguageListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	exitType?: (ctx: TypeContext) => void;
-	/**
-	 * Enter a parse tree produced by `MyLanguageParser.expression`.
-	 * @param ctx the parse tree
-	 */
-	enterExpression?: (ctx: ExpressionContext) => void;
-	/**
-	 * Exit a parse tree produced by `MyLanguageParser.expression`.
-	 * @param ctx the parse tree
-	 */
-	exitExpression?: (ctx: ExpressionContext) => void;
 	/**
 	 * Enter a parse tree produced by `MyLanguageParser.functionDeclaration`.
 	 * @param ctx the parse tree

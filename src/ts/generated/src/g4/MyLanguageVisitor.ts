@@ -1,14 +1,12 @@
-// Generated from ./src/g4/MyLanguage.g4 by ANTLR 4.13.1
+// Generated from .//src//g4//MyLanguage.g4 by ANTLR 4.13.1
 
 import {ParseTreeVisitor} from 'antlr4';
 
 
-import { FileContext } from "./MyLanguageParser";
 import { ClassDeclarationContext } from "./MyLanguageParser";
 import { MemberDeclarationContext } from "./MyLanguageParser";
 import { VariableDeclarationContext } from "./MyLanguageParser";
 import { TypeContext } from "./MyLanguageParser";
-import { ExpressionContext } from "./MyLanguageParser";
 import { FunctionDeclarationContext } from "./MyLanguageParser";
 import { FunctionInvocationContext } from "./MyLanguageParser";
 import { FunctionVarAssignmentContext } from "./MyLanguageParser";
@@ -29,12 +27,6 @@ import { ArgumentListContext } from "./MyLanguageParser";
  * operations with no return type.
  */
 export default class MyLanguageVisitor<Result> extends ParseTreeVisitor<Result> {
-	/**
-	 * Visit a parse tree produced by `MyLanguageParser.file`.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	visitFile?: (ctx: FileContext) => Result;
 	/**
 	 * Visit a parse tree produced by `MyLanguageParser.classDeclaration`.
 	 * @param ctx the parse tree
@@ -59,12 +51,6 @@ export default class MyLanguageVisitor<Result> extends ParseTreeVisitor<Result> 
 	 * @return the visitor result
 	 */
 	visitType?: (ctx: TypeContext) => Result;
-	/**
-	 * Visit a parse tree produced by `MyLanguageParser.expression`.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	visitExpression?: (ctx: ExpressionContext) => Result;
 	/**
 	 * Visit a parse tree produced by `MyLanguageParser.functionDeclaration`.
 	 * @param ctx the parse tree
