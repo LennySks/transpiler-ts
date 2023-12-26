@@ -3,7 +3,6 @@
 import {ParseTreeListener} from "antlr4";
 
 
-import { FileContext } from "./MyLanguageParser";
 import { ClassDeclarationContext } from "./MyLanguageParser";
 import { MemberDeclarationContext } from "./MyLanguageParser";
 import { VariableDeclarationContext } from "./MyLanguageParser";
@@ -15,9 +14,7 @@ import { FunctionVarAssignmentContext } from "./MyLanguageParser";
 import { ParameterContext } from "./MyLanguageParser";
 import { ParameterListContext } from "./MyLanguageParser";
 import { JsxContext } from "./MyLanguageParser";
-import { JsxContentContext } from "./MyLanguageParser";
 import { LiteralContext } from "./MyLanguageParser";
-import { BooleanExpressionContext } from "./MyLanguageParser";
 import { ArgumentListContext } from "./MyLanguageParser";
 
 
@@ -26,16 +23,6 @@ import { ArgumentListContext } from "./MyLanguageParser";
  * `MyLanguageParser`.
  */
 export default class MyLanguageListener extends ParseTreeListener {
-	/**
-	 * Enter a parse tree produced by `MyLanguageParser.file`.
-	 * @param ctx the parse tree
-	 */
-	enterFile?: (ctx: FileContext) => void;
-	/**
-	 * Exit a parse tree produced by `MyLanguageParser.file`.
-	 * @param ctx the parse tree
-	 */
-	exitFile?: (ctx: FileContext) => void;
 	/**
 	 * Enter a parse tree produced by `MyLanguageParser.classDeclaration`.
 	 * @param ctx the parse tree
@@ -147,16 +134,6 @@ export default class MyLanguageListener extends ParseTreeListener {
 	 */
 	exitJsx?: (ctx: JsxContext) => void;
 	/**
-	 * Enter a parse tree produced by `MyLanguageParser.jsxContent`.
-	 * @param ctx the parse tree
-	 */
-	enterJsxContent?: (ctx: JsxContentContext) => void;
-	/**
-	 * Exit a parse tree produced by `MyLanguageParser.jsxContent`.
-	 * @param ctx the parse tree
-	 */
-	exitJsxContent?: (ctx: JsxContentContext) => void;
-	/**
 	 * Enter a parse tree produced by `MyLanguageParser.literal`.
 	 * @param ctx the parse tree
 	 */
@@ -166,16 +143,6 @@ export default class MyLanguageListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	exitLiteral?: (ctx: LiteralContext) => void;
-	/**
-	 * Enter a parse tree produced by `MyLanguageParser.booleanExpression`.
-	 * @param ctx the parse tree
-	 */
-	enterBooleanExpression?: (ctx: BooleanExpressionContext) => void;
-	/**
-	 * Exit a parse tree produced by `MyLanguageParser.booleanExpression`.
-	 * @param ctx the parse tree
-	 */
-	exitBooleanExpression?: (ctx: BooleanExpressionContext) => void;
 	/**
 	 * Enter a parse tree produced by `MyLanguageParser.argumentList`.
 	 * @param ctx the parse tree

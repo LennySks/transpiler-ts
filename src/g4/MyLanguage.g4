@@ -1,7 +1,5 @@
 grammar MyLanguage;
 
-file: classDeclaration EOF;
-
 classDeclaration: 'class' ID '{' memberDeclaration* '}';
 
 memberDeclaration:
@@ -10,7 +8,7 @@ memberDeclaration:
 	| functionInvocation
 	| jsx;
 
-variableDeclaration: type ID '=' expression ';' | type ID ';';
+variableDeclaration: type ID ('=' literal)? ';';
 
 type: 'int' | 'string' | 'boolean';
 
@@ -43,19 +41,14 @@ parameter: type ID;
 
 parameterList: parameter (',' parameter)*;
 
-jsx: '<' ID '>' jsxContent '</' ID '>';
-
-jsxContent: jsx | STRING;
+jsx: '<' ID '>' (jsx | literal)* '</' ID '>';
 
 literal: NUMBER | STRING | BOOLEAN;
 
+argumentList: literal (',' literal)*;
+
 BOOLEAN: 'true' | 'false';
-
-booleanExpression: BOOLEAN;
-
-argumentList: literal (',' literal)* | booleanExpression;
-
-ID: [a-zA-Z]+;
-NUMBER: [0-9]+;
+ID: [a-zA-Z_][a-zA-Z0-9_]*;
 STRING: '"' ( ~["\\] | '\\' .)* '"';
+NUMBER: [0-9]+;
 WS: [ \t\n\r]+ -> skip;

@@ -8,7 +8,7 @@ export function parseSourceCode(input: string){
     const lexer = new MyLanguageLexer(chars)
     const tokenStream = new antlr4.CommonTokenStream(lexer)
     const parser = new MyLanguageParser(tokenStream)
-    const tree = parser.file()
+    const tree = parser.classDeclaration()
     const visitor = new Visitor()
     const result = visitor.visit(tree)
     console.log(result)

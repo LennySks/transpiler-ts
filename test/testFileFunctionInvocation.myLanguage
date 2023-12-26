@@ -8,4 +8,6 @@ class MyLanguage {
       myString = b;
       myBoolean = c;
   }
+
+  myFunction(20, "Goodbye, world!", false);
 }

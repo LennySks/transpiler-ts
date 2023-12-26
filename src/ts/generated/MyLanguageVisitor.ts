@@ -3,7 +3,6 @@
 import {ParseTreeVisitor} from 'antlr4';
 
 
-import { FileContext } from "./MyLanguageParser";
 import { ClassDeclarationContext } from "./MyLanguageParser";
 import { MemberDeclarationContext } from "./MyLanguageParser";
 import { VariableDeclarationContext } from "./MyLanguageParser";
@@ -15,9 +14,7 @@ import { FunctionVarAssignmentContext } from "./MyLanguageParser";
 import { ParameterContext } from "./MyLanguageParser";
 import { ParameterListContext } from "./MyLanguageParser";
 import { JsxContext } from "./MyLanguageParser";
-import { JsxContentContext } from "./MyLanguageParser";
 import { LiteralContext } from "./MyLanguageParser";
-import { BooleanExpressionContext } from "./MyLanguageParser";
 import { ArgumentListContext } from "./MyLanguageParser";
 
 
@@ -29,12 +26,6 @@ import { ArgumentListContext } from "./MyLanguageParser";
  * operations with no return type.
  */
 export default class MyLanguageVisitor<Result> extends ParseTreeVisitor<Result> {
-	/**
-	 * Visit a parse tree produced by `MyLanguageParser.file`.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	visitFile?: (ctx: FileContext) => Result;
 	/**
 	 * Visit a parse tree produced by `MyLanguageParser.classDeclaration`.
 	 * @param ctx the parse tree
@@ -102,23 +93,11 @@ export default class MyLanguageVisitor<Result> extends ParseTreeVisitor<Result> 
 	 */
 	visitJsx?: (ctx: JsxContext) => Result;
 	/**
-	 * Visit a parse tree produced by `MyLanguageParser.jsxContent`.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	visitJsxContent?: (ctx: JsxContentContext) => Result;
-	/**
 	 * Visit a parse tree produced by `MyLanguageParser.literal`.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	visitLiteral?: (ctx: LiteralContext) => Result;
-	/**
-	 * Visit a parse tree produced by `MyLanguageParser.booleanExpression`.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	visitBooleanExpression?: (ctx: BooleanExpressionContext) => Result;
 	/**
 	 * Visit a parse tree produced by `MyLanguageParser.argumentList`.
 	 * @param ctx the parse tree
