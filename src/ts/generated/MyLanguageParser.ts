@@ -758,7 +758,7 @@ export default class MyLanguageParser extends Parser {
 			this.state = 140;
 			this._errHandler.sync(this);
 			_la = this._input.LA(1);
-			while (((((_la - 16)) & ~0x1F) === 0 && ((1 << (_la - 16)) & 106497) !== 0)) {
+			while (_la===16 || _la===30) {
 				{
 				this.state = 138;
 				this._errHandler.sync(this);
@@ -769,12 +769,10 @@ export default class MyLanguageParser extends Parser {
 					this.jsx();
 					}
 					break;
-				case 29:
-				case 31:
-				case 32:
+				case 30:
 					{
 					this.state = 137;
-					this.literal();
+					this.match(MyLanguageParser.ID);
 					}
 					break;
 				default:
@@ -951,7 +949,7 @@ export default class MyLanguageParser extends Parser {
 	125,130,3,16,8,0,126,127,5,27,0,0,127,129,3,16,8,0,128,126,1,0,0,0,129,
 	132,1,0,0,0,130,128,1,0,0,0,130,131,1,0,0,0,131,19,1,0,0,0,132,130,1,0,
 	0,0,133,134,5,16,0,0,134,135,5,30,0,0,135,140,5,17,0,0,136,139,3,20,10,
-	0,137,139,3,22,11,0,138,136,1,0,0,0,138,137,1,0,0,0,139,142,1,0,0,0,140,
+	0,137,139,5,30,0,0,138,136,1,0,0,0,138,137,1,0,0,0,139,142,1,0,0,0,140,
 	138,1,0,0,0,140,141,1,0,0,0,141,143,1,0,0,0,142,140,1,0,0,0,143,144,5,28,
 	0,0,144,145,5,30,0,0,145,146,5,17,0,0,146,21,1,0,0,0,147,148,7,6,0,0,148,
 	23,1,0,0,0,149,154,3,22,11,0,150,151,5,27,0,0,151,153,3,22,11,0,152,150,
@@ -1381,12 +1379,6 @@ export class JsxContext extends ParserRuleContext {
 	public jsx(i: number): JsxContext {
 		return this.getTypedRuleContext(JsxContext, i) as JsxContext;
 	}
-	public literal_list(): LiteralContext[] {
-		return this.getTypedRuleContexts(LiteralContext) as LiteralContext[];
-	}
-	public literal(i: number): LiteralContext {
-		return this.getTypedRuleContext(LiteralContext, i) as LiteralContext;
-	}
     public get ruleIndex(): number {
     	return MyLanguageParser.RULE_jsx;
 	}
@@ -1416,11 +1408,11 @@ export class LiteralContext extends ParserRuleContext {
 		super(parent, invokingState);
     	this.parser = parser;
 	}
-	public NUMBER(): TerminalNode {
-		return this.getToken(MyLanguageParser.NUMBER, 0);
-	}
 	public STRING(): TerminalNode {
 		return this.getToken(MyLanguageParser.STRING, 0);
+	}
+	public NUMBER(): TerminalNode {
+		return this.getToken(MyLanguageParser.NUMBER, 0);
 	}
 	public BOOLEAN(): TerminalNode {
 		return this.getToken(MyLanguageParser.BOOLEAN, 0);

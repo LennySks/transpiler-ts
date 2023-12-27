@@ -41,9 +41,9 @@ parameter: type ID;
 
 parameterList: parameter (',' parameter)*;
 
-jsx: '<' ID '>' (jsx | literal)* '</' ID '>';
+jsx: '<' ID '>' (jsx | ID)* '</' ID '>';
 
-literal: NUMBER | STRING | BOOLEAN;
+literal: STRING | NUMBER | BOOLEAN;
 
 argumentList: literal (',' literal)*;
 

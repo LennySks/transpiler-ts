@@ -1,12 +1,18 @@
 import {
     ClassDeclarationContext,
-    FunctionDeclarationContext, FunctionInvocationContext,
-    FunctionVarAssignmentContext, JsxContext, LiteralContext,
-    MemberDeclarationContext, ParameterContext,
+    FunctionDeclarationContext,
+    FunctionInvocationContext,
+    FunctionVarAssignmentContext,
+    JsxContext,
+    LiteralContext,
+    MemberDeclarationContext,
+    ParameterContext,
     TypeContext,
     VariableDeclarationContext
 } from './generated/MyLanguageParser'
 import MyLanguageVisitor from './generated/MyLanguageVisitor'
+import { TerminalNode } from 'antlr4'
+
 export default class Visitor extends MyLanguageVisitor<string> {
     visitClassDeclaration = (ctx: ClassDeclarationContext): string => {
         console.log('Visiting Class Declaration')
@@ -24,19 +30,15 @@ export default class Visitor extends MyLanguageVisitor<string> {
 
         let memberCode = ''
 
-        if(ctx.variableDeclaration()) {
+        if (ctx.variableDeclaration()) {
             memberCode = this.visitVariableDeclaration(ctx.variableDeclaration())
-        }
-        else if(ctx.functionDeclaration()) {
+        } else if (ctx.functionDeclaration()) {
             memberCode = this.visitFunctionDeclaration(ctx.functionDeclaration())
-        }
-        else if(ctx.functionInvocation()) {
+        } else if (ctx.functionInvocation()) {
             memberCode = this.visitFunctionInvocation(ctx.functionInvocation())
-        }
-        else if (ctx.jsx()) {
+        } else if (ctx.jsx()) {
             memberCode = this.visitJsx(ctx.jsx())
-        }
-        else{
+        } else {
             throw new Error('Member declaration not found')
         }
         return memberCode
@@ -53,7 +55,7 @@ export default class Visitor extends MyLanguageVisitor<string> {
         const variableName = ctx.ID().getText()
         const literal = ctx.literal().getText() || ''
         const jsCode = `const ${variableName} = ${literal};`
-        console.log('Generated JavaScript code:', jsCode)
+        // console.log('Generated JavaScript code:', jsCode)
         return jsCode
     }
 
@@ -63,7 +65,7 @@ export default class Visitor extends MyLanguageVisitor<string> {
         const variableName = ctx.ID().getText()
         const expression = ctx.expression()?.getText() || 'undefined'
         const jsCode = `${variableName} = ${expression};`
-        console.log('Generated JavaScript code:', jsCode)
+        // console.log('Generated JavaScript code:', jsCode)
         return jsCode
     }
 
@@ -74,22 +76,32 @@ export default class Visitor extends MyLanguageVisitor<string> {
 
         let parameters = ''
         if (ctx.parameterList()) {
-            const parameterContexts = ctx.parameterList().getTypedRuleContexts(ParameterContext)
-            parameters = parameterContexts.map(paramCtx => this.visitParameter(paramCtx)).join(', ')
+            const parameterContexts = ctx
+                .parameterList()
+                .getTypedRuleContexts(ParameterContext)
+            parameters = parameterContexts
+                .map((paramCtx) => this.visitParameter(paramCtx))
+                .join(', ')
         }
-        let body  = ''
+        let body = ''
 
-        const variableDeclarations = ctx.getTypedRuleContexts(VariableDeclarationContext)
+        const variableDeclarations = ctx.getTypedRuleContexts(
+            VariableDeclarationContext,
+        )
         for (const variableDeclaration of variableDeclarations) {
             body += this.visitVariableDeclaration(variableDeclaration)
         }
 
-        const functionVarAssignments = ctx.getTypedRuleContexts(FunctionVarAssignmentContext)
+        const functionVarAssignments = ctx.getTypedRuleContexts(
+            FunctionVarAssignmentContext,
+        )
         for (const functionVarAssignment of functionVarAssignments) {
             body += this.visitFunctionVarAssignment(functionVarAssignment)
         }
 
-        const functionInvocations = ctx.getTypedRuleContexts(FunctionInvocationContext)
+        const functionInvocations = ctx.getTypedRuleContexts(
+            FunctionInvocationContext,
+        )
         for (const functionInvocation of functionInvocations) {
             body += this.visitFunctionInvocation(functionInvocation)
         }
@@ -100,7 +112,7 @@ export default class Visitor extends MyLanguageVisitor<string> {
         }
 
         const jsCode = `function ${functionName}(${parameters}) {${body}}`
-        console.log('Generated JavaScript code:', jsCode)
+        // console.log('Generated JavaScript code:', jsCode)
         return jsCode
     }
 
@@ -110,7 +122,7 @@ export default class Visitor extends MyLanguageVisitor<string> {
         const functionName = ctx.ID().getText()
         const parameters = ctx.argumentList()?.getText() || ''
         const jsCode = `${functionName}(${parameters});`
-        console.log('Generated JavaScript code:', jsCode)
+        // console.log('Generated JavaScript code:', jsCode)
         return jsCode
     }
 
@@ -121,29 +133,55 @@ export default class Visitor extends MyLanguageVisitor<string> {
         const typeContext: TypeContext | undefined = ctx.type_()
         const type = typeContext ? typeContext.getText() : 'any'
         const jsCode = `${type} ${parameterName}`
-        console.log('Generated JavaScript code:', jsCode)
+        // console.log('Generated JavaScript code:', jsCode)
         return jsCode
     }
 
+    visitID = (ctx: TerminalNode): string => {
+        console.log('Visiting ID')
+        return ctx.getText()
+    }
+
     visitJsx = (ctx: JsxContext): string => {
-        console.log('Visiting JSX')
+        let tag = ''
+        let closingTag = false
+        let insideTag = false
+        const children: string[] = []
 
-        const openingTagName = ctx.ID(0)
-        const closingTagName = ctx.ID(1)
-        let children = ''
-
-        const jsxContents = ctx.getTypedRuleContexts(JsxContext)
-        for (const jsxContent of jsxContents) {
-            children += this.visitJsx(jsxContent)
+        for (const child of ctx.children) {
+            if (child instanceof TerminalNode) {
+                const text = child.getText()
+                if (text === '<') {
+                    insideTag = true
+                    children.push('React.createElement("')
+                } else if (text === '>') {
+                    insideTag = false
+                    children.push('", null, ')
+                } else if (text === '</') {
+                    closingTag = true
+                } else if (text === '/>') {
+                    children.push('", null)')
+                } else if (closingTag) {
+                    children.push(')')
+                    closingTag = false
+                } else if (insideTag) {
+                    tag = text
+                    children.push(tag)
+                } else {
+                    children.push(`"${text}"`)
+                }
+            } else if (child instanceof JsxContext) {
+                children.push(this.visitJsx(child))
+            } else if (child instanceof LiteralContext) {
+                children.push(`"${this.visitLiteral(child)}"`)
+            } else {
+                children.push('UNDEFINED')
+            }
         }
-
-        const literals = ctx.getTypedRuleContexts(LiteralContext)
-        for (const literal of literals) {
-            children += this.visit(literal) + ' '
-        }
-
-        const jsCode = `<${openingTagName}>${children.trim()}</${closingTagName}>`
-        console.log('Generated JavaScript code:', jsCode)
-        return jsCode
+        return children.join('')
+    }
+    visitLiteral = (ctx: LiteralContext): string => {
+        console.log('Visiting Literal')
+        return ctx.getText()
     }
 }
