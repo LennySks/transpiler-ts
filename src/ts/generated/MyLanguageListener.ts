@@ -3,9 +3,10 @@
 import {ParseTreeListener} from "antlr4";
 
 
-import { ClassDeclarationContext } from "./MyLanguageParser";
+import { RootContext } from "./MyLanguageParser";
 import { MemberDeclarationContext } from "./MyLanguageParser";
 import { VariableDeclarationContext } from "./MyLanguageParser";
+import { ReturnStatementContext } from "./MyLanguageParser";
 import { TypeContext } from "./MyLanguageParser";
 import { ExpressionContext } from "./MyLanguageParser";
 import { FunctionDeclarationContext } from "./MyLanguageParser";
@@ -14,6 +15,8 @@ import { FunctionVarAssignmentContext } from "./MyLanguageParser";
 import { ParameterContext } from "./MyLanguageParser";
 import { ParameterListContext } from "./MyLanguageParser";
 import { JsxContext } from "./MyLanguageParser";
+import { JsxOpenContext } from "./MyLanguageParser";
+import { JsxCloseContext } from "./MyLanguageParser";
 import { LiteralContext } from "./MyLanguageParser";
 import { ArgumentListContext } from "./MyLanguageParser";
 
@@ -24,15 +27,15 @@ import { ArgumentListContext } from "./MyLanguageParser";
  */
 export default class MyLanguageListener extends ParseTreeListener {
 	/**
-	 * Enter a parse tree produced by `MyLanguageParser.classDeclaration`.
+	 * Enter a parse tree produced by `MyLanguageParser.root`.
 	 * @param ctx the parse tree
 	 */
-	enterClassDeclaration?: (ctx: ClassDeclarationContext) => void;
+	enterRoot?: (ctx: RootContext) => void;
 	/**
-	 * Exit a parse tree produced by `MyLanguageParser.classDeclaration`.
+	 * Exit a parse tree produced by `MyLanguageParser.root`.
 	 * @param ctx the parse tree
 	 */
-	exitClassDeclaration?: (ctx: ClassDeclarationContext) => void;
+	exitRoot?: (ctx: RootContext) => void;
 	/**
 	 * Enter a parse tree produced by `MyLanguageParser.memberDeclaration`.
 	 * @param ctx the parse tree
@@ -53,6 +56,16 @@ export default class MyLanguageListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	exitVariableDeclaration?: (ctx: VariableDeclarationContext) => void;
+	/**
+	 * Enter a parse tree produced by `MyLanguageParser.returnStatement`.
+	 * @param ctx the parse tree
+	 */
+	enterReturnStatement?: (ctx: ReturnStatementContext) => void;
+	/**
+	 * Exit a parse tree produced by `MyLanguageParser.returnStatement`.
+	 * @param ctx the parse tree
+	 */
+	exitReturnStatement?: (ctx: ReturnStatementContext) => void;
 	/**
 	 * Enter a parse tree produced by `MyLanguageParser.type`.
 	 * @param ctx the parse tree
@@ -133,6 +146,26 @@ export default class MyLanguageListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	exitJsx?: (ctx: JsxContext) => void;
+	/**
+	 * Enter a parse tree produced by `MyLanguageParser.jsxOpen`.
+	 * @param ctx the parse tree
+	 */
+	enterJsxOpen?: (ctx: JsxOpenContext) => void;
+	/**
+	 * Exit a parse tree produced by `MyLanguageParser.jsxOpen`.
+	 * @param ctx the parse tree
+	 */
+	exitJsxOpen?: (ctx: JsxOpenContext) => void;
+	/**
+	 * Enter a parse tree produced by `MyLanguageParser.jsxClose`.
+	 * @param ctx the parse tree
+	 */
+	enterJsxClose?: (ctx: JsxCloseContext) => void;
+	/**
+	 * Exit a parse tree produced by `MyLanguageParser.jsxClose`.
+	 * @param ctx the parse tree
+	 */
+	exitJsxClose?: (ctx: JsxCloseContext) => void;
 	/**
 	 * Enter a parse tree produced by `MyLanguageParser.literal`.
 	 * @param ctx the parse tree

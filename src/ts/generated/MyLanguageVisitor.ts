@@ -3,9 +3,10 @@
 import {ParseTreeVisitor} from 'antlr4';
 
 
-import { ClassDeclarationContext } from "./MyLanguageParser";
+import { RootContext } from "./MyLanguageParser";
 import { MemberDeclarationContext } from "./MyLanguageParser";
 import { VariableDeclarationContext } from "./MyLanguageParser";
+import { ReturnStatementContext } from "./MyLanguageParser";
 import { TypeContext } from "./MyLanguageParser";
 import { ExpressionContext } from "./MyLanguageParser";
 import { FunctionDeclarationContext } from "./MyLanguageParser";
@@ -14,6 +15,8 @@ import { FunctionVarAssignmentContext } from "./MyLanguageParser";
 import { ParameterContext } from "./MyLanguageParser";
 import { ParameterListContext } from "./MyLanguageParser";
 import { JsxContext } from "./MyLanguageParser";
+import { JsxOpenContext } from "./MyLanguageParser";
+import { JsxCloseContext } from "./MyLanguageParser";
 import { LiteralContext } from "./MyLanguageParser";
 import { ArgumentListContext } from "./MyLanguageParser";
 
@@ -27,11 +30,11 @@ import { ArgumentListContext } from "./MyLanguageParser";
  */
 export default class MyLanguageVisitor<Result> extends ParseTreeVisitor<Result> {
 	/**
-	 * Visit a parse tree produced by `MyLanguageParser.classDeclaration`.
+	 * Visit a parse tree produced by `MyLanguageParser.root`.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	visitClassDeclaration?: (ctx: ClassDeclarationContext) => Result;
+	visitRoot?: (ctx: RootContext) => Result;
 	/**
 	 * Visit a parse tree produced by `MyLanguageParser.memberDeclaration`.
 	 * @param ctx the parse tree
@@ -44,6 +47,12 @@ export default class MyLanguageVisitor<Result> extends ParseTreeVisitor<Result> 
 	 * @return the visitor result
 	 */
 	visitVariableDeclaration?: (ctx: VariableDeclarationContext) => Result;
+	/**
+	 * Visit a parse tree produced by `MyLanguageParser.returnStatement`.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	visitReturnStatement?: (ctx: ReturnStatementContext) => Result;
 	/**
 	 * Visit a parse tree produced by `MyLanguageParser.type`.
 	 * @param ctx the parse tree
@@ -92,6 +101,18 @@ export default class MyLanguageVisitor<Result> extends ParseTreeVisitor<Result> 
 	 * @return the visitor result
 	 */
 	visitJsx?: (ctx: JsxContext) => Result;
+	/**
+	 * Visit a parse tree produced by `MyLanguageParser.jsxOpen`.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	visitJsxOpen?: (ctx: JsxOpenContext) => Result;
+	/**
+	 * Visit a parse tree produced by `MyLanguageParser.jsxClose`.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	visitJsxClose?: (ctx: JsxCloseContext) => Result;
 	/**
 	 * Visit a parse tree produced by `MyLanguageParser.literal`.
 	 * @param ctx the parse tree

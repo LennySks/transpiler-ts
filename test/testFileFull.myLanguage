@@ -1,3 +1,13 @@
-class MyLanguage {
-    <h1><strong>This</strong></h1>
+int myNumber = 10;
+ string myString = "Hello, world!";
+ boolean myBoolean = true;
+
+function myFunction(int a, string b, boolean c) {
+     myNumber = a;
+     myString = b;
+     myBoolean = c;
 }
+
+myFunction(myNumber, "Goodbye, world!", false);
+
+<h1><strong>This</strong><i> is</i> a text <u> with <i>underlining</i></u></h1>

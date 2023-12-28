@@ -1,12 +1,14 @@
 import {
-    ClassDeclarationContext,
     FunctionDeclarationContext,
     FunctionInvocationContext,
     FunctionVarAssignmentContext,
+    JsxCloseContext,
     JsxContext,
+    JsxOpenContext,
     LiteralContext,
     MemberDeclarationContext,
     ParameterContext,
+    RootContext,
     TypeContext,
     VariableDeclarationContext
 } from './generated/MyLanguageParser'
@@ -14,15 +16,15 @@ import MyLanguageVisitor from './generated/MyLanguageVisitor'
 import { TerminalNode } from 'antlr4'
 
 export default class Visitor extends MyLanguageVisitor<string> {
-    visitClassDeclaration = (ctx: ClassDeclarationContext): string => {
-        console.log('Visiting Class Declaration')
+    visitRoot = (ctx: RootContext): string => {
+        console.log('Visiting Root Declaration')
 
-        const className = ctx.ID().getText()
         const members = this.visitChildren(ctx)
-        const jsCode = `class ${className} {${members}}`
+        // const jsCode = `class ${className} {${members}}`
 
-        console.log('Generated JavaScript code:', jsCode)
-        return jsCode
+        // console.log('Generated JavaScript code:', jsCode)
+        // return jsCode
+        return members
     }
 
     visitMemberDeclaration = (ctx: MemberDeclarationContext): string => {
@@ -122,7 +124,6 @@ export default class Visitor extends MyLanguageVisitor<string> {
         const functionName = ctx.ID().getText()
         const parameters = ctx.argumentList()?.getText() || ''
         const jsCode = `${functionName}(${parameters});`
-        // console.log('Generated JavaScript code:', jsCode)
         return jsCode
     }
 
@@ -143,43 +144,70 @@ export default class Visitor extends MyLanguageVisitor<string> {
     }
 
     visitJsx = (ctx: JsxContext): string => {
-        let tag = ''
-        let closingTag = false
-        let insideTag = false
-        const children: string[] = []
+        console.log('Visiting Jsx')
 
-        for (const child of ctx.children) {
-            if (child instanceof TerminalNode) {
-                const text = child.getText()
-                if (text === '<') {
-                    insideTag = true
-                    children.push('React.createElement("')
-                } else if (text === '>') {
-                    insideTag = false
-                    children.push('", null, ')
-                } else if (text === '</') {
-                    closingTag = true
-                } else if (text === '/>') {
-                    children.push('", null)')
-                } else if (closingTag) {
-                    children.push(')')
-                    closingTag = false
-                } else if (insideTag) {
-                    tag = text
-                    children.push(tag)
+        let content = ''
+        let tagName = ''
+        let tagContent = ''
+        let closingTagName = ''
+
+        // Iterate over the children of the JsxContext
+        const childCount = ctx.getChildCount()
+        for (let i = 0; i < childCount; i++) {
+            const child = ctx.getChild(i)
+
+            if (child instanceof JsxOpenContext) {
+                tagName = child.ID().getText()
+                tagContent = `React.createElement('${tagName}', null, `
+            } else if (child instanceof TerminalNode) {
+                const idContent = `'${this.visitID(child)}'`
+                if (closingTagName) {
+                    content += `,${idContent}`
+                    closingTagName = ''
                 } else {
-                    children.push(`"${text}"`)
+                    tagContent += idContent
+                    if (
+                        i < childCount - 1 &&
+            !(ctx.getChild(i + 1) instanceof JsxCloseContext)
+                    ) {
+                        tagContent += ','
+                    }
                 }
             } else if (child instanceof JsxContext) {
-                children.push(this.visitJsx(child))
-            } else if (child instanceof LiteralContext) {
-                children.push(`"${this.visitLiteral(child)}"`)
-            } else {
-                children.push('UNDEFINED')
+                tagContent += `${this.visitJsx(child)}`
+                if (
+                    i < childCount - 1 &&
+          !(ctx.getChild(i + 1) instanceof JsxCloseContext)
+                ) {
+                    tagContent += ','
+                }
+            } else if (child instanceof JsxCloseContext) {
+                closingTagName = child.ID().getText()
+                if (tagName !== closingTagName) {
+                    throw new Error(
+                        `Mismatched tags: opening tag is <${tagName}> but closing tag is </${closingTagName}>`,
+                    )
+                }
+                tagContent += ')'
+                if (i < childCount - 1) {
+                    content += `${tagContent},`
+                } else {
+                    content += tagContent
+                }
+                tagContent = ''
+            } else if (
+                child instanceof TerminalNode &&
+        child.getText().trim() === ''
+            ) {
+                // If the child is a TerminalNode containing only whitespace, preserve the whitespace
+                content += '\' \''
             }
         }
-        return children.join('')
+
+        const jsCode = content
+        return jsCode
     }
+
     visitLiteral = (ctx: LiteralContext): string => {
         console.log('Visiting Literal')
         return ctx.getText()

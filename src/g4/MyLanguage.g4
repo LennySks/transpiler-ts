@@ -1,14 +1,17 @@
 grammar MyLanguage;
 
-classDeclaration: 'class' ID '{' memberDeclaration* '}';
+root: memberDeclaration+;
 
 memberDeclaration:
 	variableDeclaration
 	| functionDeclaration
 	| functionInvocation
+	| returnStatement
 	| jsx;
 
 variableDeclaration: type ID ('=' literal)? ';';
+
+returnStatement: 'return' expression | functionInvocation | ID';';
 
 type: 'int' | 'string' | 'boolean';
 
@@ -41,11 +44,15 @@ parameter: type ID;
 
 parameterList: parameter (',' parameter)*;
 
-jsx: '<' ID '>' (jsx | ID)* '</' ID '>';
+jsx: jsxOpen (jsx | literal | ID)* jsxClose;
+
+jsxOpen: '<' ID '>';
+
+jsxClose: '</' ID '>';
 
 literal: STRING | NUMBER | BOOLEAN;
 
-argumentList: literal (',' literal)*;
+argumentList: (literal | ID) (',' (literal | ID))*;
 
 BOOLEAN: 'true' | 'false';
 ID: [a-zA-Z_][a-zA-Z0-9_]*;
