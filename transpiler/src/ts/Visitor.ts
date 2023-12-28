@@ -18,7 +18,6 @@ import { TerminalNode } from 'antlr4'
 export default class Visitor extends MyLanguageVisitor<string> {
     visitRoot = (ctx: RootContext): string => {
         console.log('Visiting Root Declaration')
-
         const members = this.visitChildren(ctx)
         // const jsCode = `class ${className} {${members}}`
 
@@ -199,7 +198,6 @@ export default class Visitor extends MyLanguageVisitor<string> {
                 child instanceof TerminalNode &&
         child.getText().trim() === ''
             ) {
-                // If the child is a TerminalNode containing only whitespace, preserve the whitespace
                 content += '\' \''
             }
         }

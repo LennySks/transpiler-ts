@@ -7,11 +7,13 @@ memberDeclaration:
 	| functionDeclaration
 	| functionInvocation
 	| returnStatement
-	| jsx;
+	| jsx
+	;
 
 variableDeclaration: type ID ('=' literal)? ';';
 
-returnStatement: 'return' expression | functionInvocation | ID';';
+returnStatement:
+'return' expression | functionInvocation | ID';';
 
 type: 'int' | 'string' | 'boolean';
 
