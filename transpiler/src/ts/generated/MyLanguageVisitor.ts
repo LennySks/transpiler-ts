@@ -9,6 +9,7 @@ import { VariableDeclarationContext } from "./MyLanguageParser";
 import { ReturnStatementContext } from "./MyLanguageParser";
 import { ReturnTypeContext } from "./MyLanguageParser";
 import { VarTypeContext } from "./MyLanguageParser";
+import { FunctionCallContext } from "./MyLanguageParser";
 import { ExpressionContext } from "./MyLanguageParser";
 import { FunctionDeclarationContext } from "./MyLanguageParser";
 import { FunctionInvocationContext } from "./MyLanguageParser";
@@ -20,6 +21,7 @@ import { JsxOpenContext } from "./MyLanguageParser";
 import { JsxCloseContext } from "./MyLanguageParser";
 import { LiteralContext } from "./MyLanguageParser";
 import { ArgumentListContext } from "./MyLanguageParser";
+import { ObjectPropertyAccessContext } from "./MyLanguageParser";
 
 
 /**
@@ -66,6 +68,12 @@ export default class MyLanguageVisitor<Result> extends ParseTreeVisitor<Result> 
 	 * @return the visitor result
 	 */
 	visitVarType?: (ctx: VarTypeContext) => Result;
+	/**
+	 * Visit a parse tree produced by `MyLanguageParser.functionCall`.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	visitFunctionCall?: (ctx: FunctionCallContext) => Result;
 	/**
 	 * Visit a parse tree produced by `MyLanguageParser.expression`.
 	 * @param ctx the parse tree
@@ -132,5 +140,11 @@ export default class MyLanguageVisitor<Result> extends ParseTreeVisitor<Result> 
 	 * @return the visitor result
 	 */
 	visitArgumentList?: (ctx: ArgumentListContext) => Result;
+	/**
+	 * Visit a parse tree produced by `MyLanguageParser.objectPropertyAccess`.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	visitObjectPropertyAccess?: (ctx: ObjectPropertyAccessContext) => Result;
 }
 

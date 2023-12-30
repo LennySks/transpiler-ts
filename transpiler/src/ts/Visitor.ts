@@ -6,8 +6,8 @@ import {
     JsxCloseContext,
     JsxContext,
     JsxOpenContext,
-    LiteralContext,
     MemberDeclarationContext,
+    ObjectPropertyAccessContext,
     ParameterContext,
     ReturnStatementContext,
     ReturnTypeContext,
@@ -61,21 +61,44 @@ export default class Visitor extends MyLanguageVisitor<string> {
             console.log('Type:', varType)
         }
 
-        const variableName = ctx.ID().getText()
+        const ids = ctx.ID_list()
+        const variableName = ids[0].getText()
+        let value = ''
         const literalContext = ctx.literal()
-        const literal = literalContext ? literalContext.getText() : ''
-        const jsCode = `${varType} ${variableName} = ${literal};`
+        const functionCallContext = ctx.functionCall()
+        if (literalContext) {
+            value = literalContext.getText()
+        } else if (functionCallContext) {
+            value = functionCallContext.getText()
+        } else if (ids.length > 1) {
+            value = ids[1].getText()
+        }
+        const jsCode = `${varType} ${variableName} = ${value};`
         return jsCode
     }
 
     visitFunctionVarAssignment = (ctx: FunctionVarAssignmentContext): string => {
         console.log('Visiting Function Variable Assignment')
 
-        const variableName = ctx.ID().getText()
+        let variableName = ''
+        if (ctx.ID()) {
+            variableName = ctx.ID().getText()
+        } else if (ctx.objectPropertyAccess()) {
+            variableName = this.visitObjectPropertyAccess(ctx.objectPropertyAccess())
+        }
+
         const expression = ctx.expression()?.getText() || 'undefined'
         const jsCode = `${variableName} = ${expression};`
         // console.log('Generated JavaScript code:', jsCode)
         return jsCode
+    }
+
+    visitObjectPropertyAccess = (ctx: ObjectPropertyAccessContext): string => {
+        const propertyAccess = ctx
+            .ID_list()
+            .map((id) => id.getText())
+            .join('.')
+        return propertyAccess
     }
 
     visitFunctionDeclaration = (ctx: FunctionDeclarationContext): string => {
@@ -108,17 +131,12 @@ export default class Visitor extends MyLanguageVisitor<string> {
     visitFunctionInvocation = (ctx: FunctionInvocationContext): string => {
         console.log('Visiting Function Invocation')
 
-        // Get the list of IDs
         const ids: TerminalNode[] = ctx.ID_list()
-
         let functionName = ''
-
         if (ids.length === 2) {
-            // If there are two IDs, the first one is the object or module name
             const objectName = ids[0].getText()
             functionName = `${objectName}.${ids[1].getText()}`
         } else {
-            // If there's only one ID, it's the function name
             functionName = ids[0].getText()
         }
 
@@ -254,10 +272,5 @@ export default class Visitor extends MyLanguageVisitor<string> {
 
         const jsCode = content
         return jsCode
-    }
-
-    visitLiteral = (ctx: LiteralContext): string => {
-        console.log('Visiting Literal')
-        return ctx.getText()
     }
 }

@@ -11,13 +11,17 @@ memberDeclaration:
 	| jsx
 	;
 
-variableDeclaration: varType ID (':' returnType)? ('=' literal)? ';';
+variableDeclaration: varType ID (':' returnType)? ('=' (literal | ID | functionCall))? ';';
 
 returnStatement: 'return' expression | functionInvocation | jsx | ID ';';
 
 returnType: 'number' | 'string' | 'boolean';
 
 varType: 'const' | 'let' | 'var';
+
+functionCall
+    : ID '(' ')'
+    ;
 
 expression:
 	'(' expression ')'
@@ -30,14 +34,15 @@ expression:
 	| jsx
 	| ID
 	| literal
+	| objectPropertyAccess
 	;
 
 functionDeclaration:
 	'function' ID '(' parameterList? ')' '{' memberDeclaration+ '}';
 
-functionInvocation: (ID '.') ? ID '(' argumentList? ')' ';';
+functionInvocation: (ID '.')? ID '(' argumentList? ')' ';';
 
-functionVarAssignment: ID '=' expression ';';
+functionVarAssignment: (ID | objectPropertyAccess) '=' expression ';';
 
 parameter: ID ':' returnType;
 
@@ -52,6 +57,8 @@ jsxClose: '</' ID '>';
 literal: STRING | NUMBER | BOOLEAN;
 
 argumentList: (literal | ID) (',' (literal | ID))*;
+
+objectPropertyAccess: ID ('.' ID)+;
 
 BOOLEAN: 'true' | 'false';
 ID: [a-zA-Z_][a-zA-Z0-9_]*;
