@@ -7,15 +7,17 @@ memberDeclaration:
 	| functionDeclaration
 	| functionInvocation
 	| returnStatement
+	| functionVarAssignment
 	| jsx
 	;
 
-variableDeclaration: type ID ('=' literal)? ';';
+variableDeclaration: varType ID (':' returnType)? ('=' literal)? ';';
 
-returnStatement:
-'return' expression | functionInvocation | ID';';
+returnStatement: 'return' expression | functionInvocation | jsx | ID ';';
 
-type: 'int' | 'string' | 'boolean';
+returnType: 'number' | 'string' | 'boolean';
+
+varType: 'const' | 'let' | 'var';
 
 expression:
 	'(' expression ')'
@@ -25,24 +27,19 @@ expression:
 	| expression ('==' | '!=') expression
 	| expression ('&&' | '||') expression
 	| expression '?' expression ':' expression
+	| jsx
 	| ID
-	| NUMBER
-	| STRING
-	| BOOLEAN;
+	| literal
+	;
 
 functionDeclaration:
-	'function' ID '(' parameterList? ')' '{' (
-		variableDeclaration
-		| functionVarAssignment
-		| functionInvocation
-		| jsx
-	)* '}';
+	'function' ID '(' parameterList? ')' '{' memberDeclaration+ '}';
 
-functionInvocation: ID '(' argumentList? ')' ';';
+functionInvocation: (ID '.') ? ID '(' argumentList? ')' ';';
 
 functionVarAssignment: ID '=' expression ';';
 
-parameter: type ID;
+parameter: ID ':' returnType;
 
 parameterList: parameter (',' parameter)*;
 
@@ -58,6 +55,6 @@ argumentList: (literal | ID) (',' (literal | ID))*;
 
 BOOLEAN: 'true' | 'false';
 ID: [a-zA-Z_][a-zA-Z0-9_]*;
-STRING: '"' ( ~["\\] | '\\' .)* '"';
+STRING: '"' ( ~["\\] | '\\' .)* '"' | '\'' ( ~['\\] | '\\' .)* '\'';
 NUMBER: [0-9]+;
 WS: [ \t\n\r]+ -> skip;

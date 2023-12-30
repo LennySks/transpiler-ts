@@ -1,16 +1,12 @@
 {
-  "name": "loader",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "name": "ts-template-package",
+  "version": "1.1.1",
+  "private": true,
+  "author": "Lars Willemsens",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "devDependencies": {
-    "my-language-transpiler": "^1.0.0",
     "@babel/core": "^7.19.1",
     "@babel/preset-env": "^7.19.1",
     "@types/jest": "^28.1.1",
@@ -21,5 +17,12 @@
     "jest": "^28.1.3",
     "ts-jest": "^28.0.8",
     "typescript": "^4.8.2"
+  },
+  "dependencies": {
+    "transpiler": "file:../transpiler"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "jest"
   }
 }

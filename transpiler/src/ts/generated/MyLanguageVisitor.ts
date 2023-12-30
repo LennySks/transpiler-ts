@@ -7,7 +7,8 @@ import { RootContext } from "./MyLanguageParser";
 import { MemberDeclarationContext } from "./MyLanguageParser";
 import { VariableDeclarationContext } from "./MyLanguageParser";
 import { ReturnStatementContext } from "./MyLanguageParser";
-import { TypeContext } from "./MyLanguageParser";
+import { ReturnTypeContext } from "./MyLanguageParser";
+import { VarTypeContext } from "./MyLanguageParser";
 import { ExpressionContext } from "./MyLanguageParser";
 import { FunctionDeclarationContext } from "./MyLanguageParser";
 import { FunctionInvocationContext } from "./MyLanguageParser";
@@ -54,11 +55,17 @@ export default class MyLanguageVisitor<Result> extends ParseTreeVisitor<Result> 
 	 */
 	visitReturnStatement?: (ctx: ReturnStatementContext) => Result;
 	/**
-	 * Visit a parse tree produced by `MyLanguageParser.type`.
+	 * Visit a parse tree produced by `MyLanguageParser.returnType`.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	visitType?: (ctx: TypeContext) => Result;
+	visitReturnType?: (ctx: ReturnTypeContext) => Result;
+	/**
+	 * Visit a parse tree produced by `MyLanguageParser.varType`.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	visitVarType?: (ctx: VarTypeContext) => Result;
 	/**
 	 * Visit a parse tree produced by `MyLanguageParser.expression`.
 	 * @param ctx the parse tree

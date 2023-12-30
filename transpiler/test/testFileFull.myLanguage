@@ -1,13 +1,17 @@
-int myNumber = 10;
-string myString = "Hello, world!";
-boolean myBoolean = true;
+let myNumber: number = 10;
+let myString: string = 'Hello, world!';
+let myBoolean: boolean = true;
 
-function myFunction(int a, string b, boolean c) {
-     myNumber = a;
-     myString = b;
-     myBoolean = c;
+function myFunction(a: number, b: string, c: boolean) {
+    myNumber = a;
+    myString = b;
+    myBoolean = c;
 }
 
-myFunction(myNumber, "Goodbye, world!", false);
+myFunction(myNumber, 'Goodbye, world!', false);
 
-<h1><strong>This</strong><i> is</i> a text <u> with <i>underlining</i></u></h1>
+console.log("hello");
+
+function App() {
+    return <h1><strong>This</strong><i> is</i> a text <u> with <i>underlining</i></u></h1>
+}
