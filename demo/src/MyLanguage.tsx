@@ -1,5 +1,5 @@
 let myNumber = 10
-let myString = 'Hello, world!'
+let myString = 'Hello, console!'
 let myBoolean = true
 
 function myFunction(a: number, b: string, c: boolean) {
@@ -8,10 +8,18 @@ function myFunction(a: number, b: string, c: boolean) {
     myBoolean = c
 }
 
-myFunction(myNumber, 'Goodbye, world!', false)
+// #TODO: fix this multiple things in
+
+// (myString, myNumber, myBoolean)
+myFunction(3, 'Goodbye, world!', false)
+
+// (myString, myNumber, myBoolean)
 
 function App() {
     return (
         <h1><strong>This</strong><i> is</i> a text <u> with <i>underlining</i></u></h1>
     )
 }
+
+const result = App()
+document.body.innerHTML = result

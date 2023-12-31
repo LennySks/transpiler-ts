@@ -1,18 +1,19 @@
 {
-    "compilerOptions": {
-        "allowJs": true,
-        "declaration": true,
-        "esModuleInterop": true,
-        "module": "CommonJS",
-        "noImplicitAny": true,
-        "outDir": "dist",
-        "preserveConstEnums": true,
-        "removeComments": true,
-        "sourceMap": true,
-        "target": "ES6"
-    },
-    "include": [
-        "src/ts/**/*",
-        "decs.d.ts"
-    ]
+  "compilerOptions": {
+    "allowJs": true,
+    "declaration": true,
+    "esModuleInterop": true,
+    "module": "CommonJS",
+    "noImplicitAny": true,
+    "outDir": "dist",
+    "preserveConstEnums": true,
+    "removeComments": true,
+    "sourceMap": true,
+    "target": "ES6",
+    "downlevelIteration": true
+  },
+  "include": [
+    "src/ts/**/*",
+    "decs.d.ts"
+  ]
 }

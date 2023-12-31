@@ -9,7 +9,6 @@ import { VariableDeclarationContext } from "./MyLanguageParser";
 import { ReturnStatementContext } from "./MyLanguageParser";
 import { ReturnTypeContext } from "./MyLanguageParser";
 import { VarTypeContext } from "./MyLanguageParser";
-import { FunctionCallContext } from "./MyLanguageParser";
 import { ExpressionContext } from "./MyLanguageParser";
 import { FunctionDeclarationContext } from "./MyLanguageParser";
 import { FunctionInvocationContext } from "./MyLanguageParser";
@@ -89,16 +88,6 @@ export default class MyLanguageListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	exitVarType?: (ctx: VarTypeContext) => void;
-	/**
-	 * Enter a parse tree produced by `MyLanguageParser.functionCall`.
-	 * @param ctx the parse tree
-	 */
-	enterFunctionCall?: (ctx: FunctionCallContext) => void;
-	/**
-	 * Exit a parse tree produced by `MyLanguageParser.functionCall`.
-	 * @param ctx the parse tree
-	 */
-	exitFunctionCall?: (ctx: FunctionCallContext) => void;
 	/**
 	 * Enter a parse tree produced by `MyLanguageParser.expression`.
 	 * @param ctx the parse tree

@@ -1,6 +1,5 @@
-import myJsxCompiler from 'transpiler'
+import {parseSourceCode} from 'transpiler'
 
-module.exports = function (source: string) {
-    const compiledCode: string = myJsxCompiler.parseSourceCode(source)
-    return compiledCode
+export default function loader(source: string) {
+    return parseSourceCode(source)
 }

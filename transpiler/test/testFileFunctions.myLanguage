@@ -1,9 +1,5 @@
-let myNumber: number = 10;
-let myString: string = 'Hello, world!';
-let myBoolean: boolean = true;
-
 function myFunction(a: number, b: string, c: boolean) {
-    myNumber = a;
-    myString = b;
-    myBoolean = c;
+    myNumber = a
+    myString = b
+    myBoolean = c
 }

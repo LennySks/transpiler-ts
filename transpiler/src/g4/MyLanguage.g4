@@ -8,41 +8,30 @@ memberDeclaration:
 	| functionInvocation
 	| returnStatement
 	| functionVarAssignment
-	| jsx
-	;
+	| jsx;
 
-variableDeclaration: varType ID (':' returnType)? ('=' (literal | ID | functionCall))? ';';
 
-returnStatement: 'return' expression | functionInvocation | jsx | ID ';';
+variableDeclaration: varType ID (':' returnType)? ('=' (literal | ID | functionInvocation))?;
+
+returnStatement: 'return' (expression | functionInvocation | ID);
 
 returnType: 'number' | 'string' | 'boolean';
 
 varType: 'const' | 'let' | 'var';
 
-functionCall
-    : ID '(' ')'
-    ;
-
 expression:
 	'(' expression ')'
-	| expression ('*' | '/' | '%') expression
-	| expression ('+' | '-') expression
-	| expression ('<' | '>' | '<=' | '>=') expression
-	| expression ('==' | '!=') expression
-	| expression ('&&' | '||') expression
-	| expression '?' expression ':' expression
-	| jsx
 	| ID
 	| literal
 	| objectPropertyAccess
-	;
+	| jsx;
 
-functionDeclaration:
-	'function' ID '(' parameterList? ')' '{' memberDeclaration+ '}';
 
-functionInvocation: (ID '.')? ID '(' argumentList? ')' ';';
+functionDeclaration: 'function' ID '(' parameterList? ')' '{' memberDeclaration+ '}';
 
-functionVarAssignment: (ID | objectPropertyAccess) '=' expression ';';
+functionInvocation: (ID '.')? ID '(' argumentList? ')';
+
+functionVarAssignment: (ID | objectPropertyAccess) '=' expression;
 
 parameter: ID ':' returnType;
 

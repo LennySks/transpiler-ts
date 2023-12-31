@@ -1,8 +1,8 @@
 // Generated from e://School//3//Programmeren 3//lsp-sample//BasicJava.g4 by ANTLR 4.13.1
 
-import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.tree.ErrorNode;
-import org.antlr.v4.runtime.tree.TerminalNode;
+import org.antlr.v4.runtime.ParserRuleContext
+import org.antlr.v4.runtime.tree.ErrorNode
+import org.antlr.v4.runtime.tree.TerminalNode
 
 /**
  * This class provides an empty implementation of {@link BasicJavaListener},

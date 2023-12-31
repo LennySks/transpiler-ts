@@ -20,19 +20,11 @@ import { TerminalNode } from 'antlr4'
 
 export default class Visitor extends MyLanguageVisitor<string> {
     visitRoot = (ctx: RootContext): string => {
-        const childrenResults = this.visitChildren(ctx)
-        if (Array.isArray(childrenResults)) {
-            return childrenResults.join('\n')
-        } else {
-            return childrenResults
-        }
+        return this.visitChildren(ctx)
     }
 
     visitMemberDeclaration = (ctx: MemberDeclarationContext): string => {
-        console.log('Visiting Member Declaration')
-
         let memberCode = ''
-
         if (ctx.variableDeclaration()) {
             memberCode = this.visitVariableDeclaration(ctx.variableDeclaration())
         } else if (ctx.functionDeclaration()) {
@@ -52,20 +44,17 @@ export default class Visitor extends MyLanguageVisitor<string> {
     }
 
     visitVariableDeclaration = (ctx: VariableDeclarationContext): string => {
-        console.log('Visiting Variable Declaration')
-
         const varTypeContext: VarTypeContext | undefined = ctx.varType()
         let varType = 'var' // default to 'var' if varTypeContext is undefined
         if (varTypeContext) {
             varType = varTypeContext.getText()
-            console.log('Type:', varType)
         }
 
         const ids = ctx.ID_list()
         const variableName = ids[0].getText()
         let value = ''
         const literalContext = ctx.literal()
-        const functionCallContext = ctx.functionCall()
+        const functionCallContext = ctx.functionInvocation()
         if (literalContext) {
             value = literalContext.getText()
         } else if (functionCallContext) {
@@ -73,13 +62,11 @@ export default class Visitor extends MyLanguageVisitor<string> {
         } else if (ids.length > 1) {
             value = ids[1].getText()
         }
-        const jsCode = `${varType} ${variableName} = ${value};`
+        const jsCode = `${varType} ${variableName} = ${value}`
         return jsCode
     }
 
     visitFunctionVarAssignment = (ctx: FunctionVarAssignmentContext): string => {
-        console.log('Visiting Function Variable Assignment')
-
         let variableName = ''
         if (ctx.ID()) {
             variableName = ctx.ID().getText()
@@ -88,8 +75,7 @@ export default class Visitor extends MyLanguageVisitor<string> {
         }
 
         const expression = ctx.expression()?.getText() || 'undefined'
-        const jsCode = `${variableName} = ${expression};`
-        // console.log('Generated JavaScript code:', jsCode)
+        const jsCode = `${variableName} = ${expression}`
         return jsCode
     }
 
@@ -102,8 +88,6 @@ export default class Visitor extends MyLanguageVisitor<string> {
     }
 
     visitFunctionDeclaration = (ctx: FunctionDeclarationContext): string => {
-        console.log('Visiting Function Declaration')
-
         const functionName = ctx.ID().getText()
 
         let parameters = ''
@@ -124,13 +108,11 @@ export default class Visitor extends MyLanguageVisitor<string> {
             body += this.visitMemberDeclaration(memberDeclaration)
         }
         const jsCode = `function ${functionName}(${parameters}) {${body}}`
-        // console.log('Generated JavaScript code:', jsCode)
+        // ('Generated JavaScript code:', jsCode)
         return jsCode
     }
 
     visitFunctionInvocation = (ctx: FunctionInvocationContext): string => {
-        console.log('Visiting Function Invocation')
-
         const ids: TerminalNode[] = ctx.ID_list()
         let functionName = ''
         if (ids.length === 2) {
@@ -141,29 +123,23 @@ export default class Visitor extends MyLanguageVisitor<string> {
         }
 
         const parameters = ctx.argumentList()?.getText() || ''
-        const jsCode = `${functionName}(${parameters});`
+        const jsCode = `${functionName}(${parameters})`
         return jsCode
     }
 
     visitParameter = (ctx: ParameterContext): string => {
-        console.log('Visiting Parameter')
-
         const parameterName = ctx.ID().getText()
         const typeContext: ReturnTypeContext | undefined = ctx.returnType()
         const type = typeContext ? typeContext.getText() : 'any'
         const jsCode = `${parameterName}`
-        // console.log('Generated JavaScript code:', jsCode)
         return jsCode
     }
 
     visitID = (ctx: TerminalNode): string => {
-        console.log('Visiting ID')
         return ctx.getText()
     }
 
     visitReturnStatement = (ctx: ReturnStatementContext): string => {
-        console.log('Visiting Return Statement')
-
         let returnValue = ''
 
         if (ctx.expression()) {
@@ -176,14 +152,11 @@ export default class Visitor extends MyLanguageVisitor<string> {
             returnValue = ctx.ID().getText()
         }
 
-        const jsCode = `return ${returnValue};`
-        // console.log('Generated JavaScript code:', jsCode)
+        const jsCode = `return ${returnValue}`
         return jsCode
     }
 
     visitExpression = (ctx: ExpressionContext): string => {
-        console.log('Visiting Expression')
-
         let expressionCode = ''
 
         const literalContext = ctx.literal()
@@ -218,8 +191,6 @@ export default class Visitor extends MyLanguageVisitor<string> {
     }
 
     visitJsx = (ctx: JsxContext): string => {
-        console.log('Visiting Jsx')
-
         let content = ''
         let tagName = ''
         let tagContent = ''
@@ -239,16 +210,16 @@ export default class Visitor extends MyLanguageVisitor<string> {
                     content += `,${idContent}`
                     closingTagName = ''
                 } else {
-                    tagContent += ` + ${idContent}`
+                    tagContent += ` ${idContent}`
                     if (
                         i < childCount - 1 &&
             !(ctx.getChild(i + 1) instanceof JsxCloseContext)
                     ) {
-                        tagContent += ' + \' \''
+                        tagContent += ' \' \''
                     }
                 }
             } else if (child instanceof JsxContext) {
-                tagContent += ` + ${this.visitJsx(child)}`
+                tagContent += this.visitJsx(child)
             } else if (child instanceof JsxCloseContext) {
                 closingTagName = child.ID().getText()
                 if (tagName !== closingTagName) {
@@ -257,7 +228,7 @@ export default class Visitor extends MyLanguageVisitor<string> {
                     )
                 }
                 if (i < childCount - 1) {
-                    content += `${tagContent} + ' '`
+                    content += `${tagContent}' '`
                 } else {
                     content += tagContent
                 }
@@ -270,7 +241,13 @@ export default class Visitor extends MyLanguageVisitor<string> {
             }
         }
 
-        const jsCode = content
-        return jsCode
+        const jsxCode = content
+
+        // const transformed = babel.transform(jsxCode, {
+        //     presets: ['@babel/preset-env']
+        // })
+        //
+        // const jsCode = transformed.code || ''
+        return jsxCode
     }
 }

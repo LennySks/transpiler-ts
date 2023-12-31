@@ -1,16 +1,16 @@
-let myNumber = 10;
-let myString = 'Hello, console!';
-let myBoolean = true;
+let myNumber = 10
+let myString = 'Hello, console!'
+let myBoolean = true
 
 function myFunction(a: number, b: string, c: boolean) {
-    myNumber = a;
-    myString = b;
-    myBoolean = c;
+    myNumber = a
+    myString = b
+    myBoolean = c
 }
 
-console.log(myString);
-myFunction(myNumber, 'Goodbye, world!', false);
-console.log(myString);
+console.log(myString)
+myFunction(myNumber, 'Goodbye, world!', false)
+console.log(myString)
 
 function App() {
     return (
@@ -18,5 +18,5 @@ function App() {
     )
 }
 
-const result = App();
-document.body.innerHTML = result;
+const result = App()
+document.body.innerHTML = result
