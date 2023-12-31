@@ -1,5 +1,6 @@
 import * as fs from 'fs'
 import * as path from 'path'
+import { compiler } from '../src/ts/compiler'
 import { parseSourceCode } from '../src/ts'
 
 describe('MyLanguageVisitor', () => {
@@ -8,7 +9,7 @@ describe('MyLanguageVisitor', () => {
             path.join(__dirname, 'testFileVariable.myLanguage'),
             'utf-8',
         )
-        parseSourceCode(input)
+        compiler(input)
     })
 
     test('should test testFileFunctions', () => {
@@ -16,7 +17,7 @@ describe('MyLanguageVisitor', () => {
             path.join(__dirname, 'testFileFunctions.myLanguage'),
             'utf-8',
         )
-        parseSourceCode(input)
+        compiler(input)
     })
 
     test('should test testFileFunctionInvocation', () => {
@@ -24,6 +25,7 @@ describe('MyLanguageVisitor', () => {
             path.join(__dirname, 'testFileFunctionInvocation.myLanguage'),
             'utf-8',
         )
+        compiler(input)
         parseSourceCode(input)
     })
 
@@ -32,6 +34,7 @@ describe('MyLanguageVisitor', () => {
             path.join(__dirname, 'testFileFull.myLanguage'),
             'utf-8',
         )
-        parseSourceCode(input)
+        compiler(input)
+    // parseSourceCode(input)
     })
 })

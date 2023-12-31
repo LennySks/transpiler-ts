@@ -3,7 +3,7 @@ import {
     FunctionDeclarationContext,
     FunctionInvocationContext,
     FunctionVarAssignmentContext,
-    JsxCloseContext,
+    ImportStatementContext,
     JsxContext,
     JsxOpenContext,
     MemberDeclarationContext,
@@ -12,109 +12,197 @@ import {
     ReturnStatementContext,
     ReturnTypeContext,
     RootContext,
-    VariableDeclarationContext,
-    VarTypeContext
+    VariableDeclarationContext
 } from './generated/MyLanguageParser'
 import MyLanguageVisitor from './generated/MyLanguageVisitor'
 import { TerminalNode } from 'antlr4'
+import {
+    ASTNode,
+    ExpressionNode,
+    functionCall,
+    FunctionDeclarationNode,
+    FunctionInvocationNode,
+    FunctionVarAssignmentNode,
+    IdentifierNode,
+    JsxNode,
+    LiteralNode,
+    MemberDeclarationNode,
+    NamespaceImportNode,
+    ObjectPropertyAccessNode,
+    ParameterNode,
+    ReturnStatementNode,
+    returnType,
+    RootNode,
+    VariableDeclarationNode,
+    VarType
+} from './AST'
 
-export default class Visitor extends MyLanguageVisitor<string> {
-    visitRoot = (ctx: RootContext): string => {
-        return this.visitChildren(ctx)
+export default class Visitor extends MyLanguageVisitor<ASTNode> {
+    visitRoot = (ctx: RootContext): RootNode => {
+        const children = this.visitChildren(ctx)
+        const unknownMembers: unknown = children
+        if (Array.isArray(unknownMembers)) {
+            const members = unknownMembers.map(
+                (item) => item as MemberDeclarationNode,
+            )
+            return { type: 'RootNode', members }
+        }
+        throw new Error('Invalid structure for RootNode')
     }
 
-    visitMemberDeclaration = (ctx: MemberDeclarationContext): string => {
-        let memberCode = ''
-        if (ctx.variableDeclaration()) {
-            memberCode = this.visitVariableDeclaration(ctx.variableDeclaration())
+    visitMemberDeclaration = (
+        ctx: MemberDeclarationContext,
+    ): MemberDeclarationNode => {
+        let member: MemberDeclarationNode | undefined
+        if (ctx.importStatement()) {
+            member = this.visitImportStatement(ctx.importStatement())
+        } else if (ctx.variableDeclaration()) {
+            member = this.visitVariableDeclaration(ctx.variableDeclaration())
         } else if (ctx.functionDeclaration()) {
-            memberCode = this.visitFunctionDeclaration(ctx.functionDeclaration())
+            member = this.visitFunctionDeclaration(ctx.functionDeclaration())
         } else if (ctx.functionInvocation()) {
-            memberCode = this.visitFunctionInvocation(ctx.functionInvocation())
+            member = this.visitFunctionInvocation(ctx.functionInvocation())
         } else if (ctx.jsx()) {
-            memberCode = this.visitJsx(ctx.jsx())
+            member = this.visitJsx(ctx.jsx())
         } else if (ctx.returnStatement()) {
-            memberCode = this.visitReturnStatement(ctx.returnStatement())
+            member = this.visitReturnStatement(ctx.returnStatement())
         } else if (ctx.functionVarAssignment()) {
-            memberCode = this.visitFunctionVarAssignment(ctx.functionVarAssignment())
+            member = this.visitFunctionVarAssignment(ctx.functionVarAssignment())
         } else {
             throw new Error('Member declaration not found')
         }
-        return memberCode
+        return member
     }
 
-    visitVariableDeclaration = (ctx: VariableDeclarationContext): string => {
-        const varTypeContext: VarTypeContext | undefined = ctx.varType()
-        let varType = 'var' // default to 'var' if varTypeContext is undefined
-        if (varTypeContext) {
-            varType = varTypeContext.getText()
+    visitImportStatement = (ctx: ImportStatementContext): NamespaceImportNode => {
+        const alias = ctx.ID().getText()
+        const source = ctx.STRING().getText().slice(1, -1) // Remove quotes
+        return {
+            type: 'NamespaceImportNode',
+            alias,
+            source
         }
+    }
+
+    visitVariableDeclaration = (
+        ctx: VariableDeclarationContext,
+    ): VariableDeclarationNode => {
+        const varTypeContext = ctx.varType()
+        const varType: VarType = varTypeContext
+            ? (varTypeContext.getText() as VarType)
+            : 'var'
 
         const ids = ctx.ID_list()
-        const variableName = ids[0].getText()
-        let value = ''
+        const variableName: IdentifierNode = {
+            type: 'IdentifierNode',
+            value: ids[0].getText()
+        }
+        let value: LiteralNode | IdentifierNode | functionCall
+
         const literalContext = ctx.literal()
         const functionCallContext = ctx.functionInvocation()
+
         if (literalContext) {
-            value = literalContext.getText()
+            value = this.visitLiteral(literalContext)
         } else if (functionCallContext) {
-            value = functionCallContext.getText()
+            const functionInvocation =
+        this.visitFunctionInvocation(functionCallContext)
+            value = {
+                functionName: functionInvocation.functionName,
+                arguments: functionInvocation.arguments.map((arg) =>
+                    arg.type === 'IdentifierNode' ? arg.value : arg,
+                )
+            }
         } else if (ids.length > 1) {
-            value = ids[1].getText()
+            value = { type: 'IdentifierNode', value: ids[1].getText() }
         }
-        const jsCode = `${varType} ${variableName} = ${value}`
-        return jsCode
+
+        return {
+            type: 'VariableDeclarationNode',
+            varType,
+            variableName,
+            value
+        }
     }
 
-    visitFunctionVarAssignment = (ctx: FunctionVarAssignmentContext): string => {
+    visitFunctionVarAssignment = (
+        ctx: FunctionVarAssignmentContext,
+    ): FunctionVarAssignmentNode => {
         let variableName = ''
+        let expression: ExpressionNode
+
         if (ctx.ID()) {
             variableName = ctx.ID().getText()
         } else if (ctx.objectPropertyAccess()) {
-            variableName = this.visitObjectPropertyAccess(ctx.objectPropertyAccess())
+            variableName = this.visitObjectPropertyAccess(
+                ctx.objectPropertyAccess(),
+            ).properties.join('.')
         }
 
-        const expression = ctx.expression()?.getText() || 'undefined'
-        const jsCode = `${variableName} = ${expression}`
-        return jsCode
+        if (ctx.expression()) {
+            expression = this.visitExpression(ctx.expression())
+        }
+
+        const functionVarAssignmentNode: FunctionVarAssignmentNode = {
+            type: 'FunctionVarAssignmentNode',
+            variableName,
+            expression
+        }
+
+        return functionVarAssignmentNode
     }
 
-    visitObjectPropertyAccess = (ctx: ObjectPropertyAccessContext): string => {
-        const propertyAccess = ctx
-            .ID_list()
-            .map((id) => id.getText())
-            .join('.')
-        return propertyAccess
+    visitObjectPropertyAccess = (
+        ctx: ObjectPropertyAccessContext,
+    ): ObjectPropertyAccessNode => {
+        const properties = ctx.ID_list().map((id) => id.getText())
+
+        return {
+            type: 'ObjectPropertyAccessNode',
+            properties
+        }
     }
 
-    visitFunctionDeclaration = (ctx: FunctionDeclarationContext): string => {
+    visitFunctionDeclaration = (
+        ctx: FunctionDeclarationContext,
+    ): FunctionDeclarationNode => {
         const functionName = ctx.ID().getText()
 
-        let parameters = ''
+        let parameters: ParameterNode[] = []
         if (ctx.parameterList()) {
             const parameterContexts = ctx
                 .parameterList()
                 .getTypedRuleContexts(ParameterContext)
-            parameters = parameterContexts
-                .map((paramCtx) => this.visitParameter(paramCtx))
-                .join(', ')
+            parameters = parameterContexts.map((paramCtx) =>
+                this.visitParameter(paramCtx),
+            )
         }
-        let body = ''
 
+        const body: MemberDeclarationNode[] = []
         const memberDeclarations = ctx.getTypedRuleContexts(
             MemberDeclarationContext,
         )
         for (const memberDeclaration of memberDeclarations) {
-            body += this.visitMemberDeclaration(memberDeclaration)
+            const member = this.visitMemberDeclaration(memberDeclaration)
+            if (member) {
+                body.push(member as MemberDeclarationNode)
+            }
         }
-        const jsCode = `function ${functionName}(${parameters}) {${body}}`
-        // ('Generated JavaScript code:', jsCode)
-        return jsCode
+
+        return {
+            type: 'FunctionDeclarationNode',
+            functionName,
+            parameters,
+            body
+        }
     }
 
-    visitFunctionInvocation = (ctx: FunctionInvocationContext): string => {
+    visitFunctionInvocation = (
+        ctx: FunctionInvocationContext,
+    ): FunctionInvocationNode => {
         const ids: TerminalNode[] = ctx.ID_list()
         let functionName = ''
+
         if (ids.length === 2) {
             const objectName = ids[0].getText()
             functionName = `${objectName}.${ids[1].getText()}`
@@ -122,79 +210,88 @@ export default class Visitor extends MyLanguageVisitor<string> {
             functionName = ids[0].getText()
         }
 
-        const parameters = ctx.argumentList()?.getText() || ''
-        const jsCode = `${functionName}(${parameters})`
-        return jsCode
+        const argumentsList: (LiteralNode | IdentifierNode)[] = []
+        if (ctx.argumentList()) {
+            const argumentContexts = ctx.argumentList().children
+            for (const argumentContext of argumentContexts) {
+                // Remove the commas that come by using argumentList().children
+                if (argumentContext.getText() !== ',') {
+                    if (argumentContext instanceof TerminalNode) {
+                        argumentsList.push({
+                            type: 'IdentifierNode',
+                            value: argumentContext.getText()
+                        })
+                    } else {
+                        argumentsList.push(this.visitLiteral(argumentContext))
+                    }
+                }
+            }
+        }
+
+        return {
+            type: 'FunctionInvocationNode',
+            functionName,
+            arguments: argumentsList
+        }
     }
 
-    visitParameter = (ctx: ParameterContext): string => {
+    visitParameter = (ctx: ParameterContext): ParameterNode => {
         const parameterName = ctx.ID().getText()
-        const typeContext: ReturnTypeContext | undefined = ctx.returnType()
-        const type = typeContext ? typeContext.getText() : 'any'
-        const jsCode = `${parameterName}`
-        return jsCode
+        const returnTypeContext: ReturnTypeContext | undefined = ctx.returnType()
+        const returnType: returnType = returnTypeContext.getText() as returnType
+
+        return {
+            type: 'ParameterNode',
+            parameterName,
+            returnType
+        }
     }
 
     visitID = (ctx: TerminalNode): string => {
         return ctx.getText()
     }
 
-    visitReturnStatement = (ctx: ReturnStatementContext): string => {
-        let returnValue = ''
+    visitExpression = (ctx: ExpressionContext): ExpressionNode => {
+        let expression: ExpressionNode
+
+        if (ctx.literal()) {
+            expression = this.visitLiteral(ctx.literal())
+        } else if (ctx.ID()) {
+            expression = { type: 'IdentifierNode', value: ctx.ID().getText() }
+        } else if (ctx.objectPropertyAccess()) {
+            expression = this.visitObjectPropertyAccess(ctx.objectPropertyAccess())
+        } else if (ctx.jsx()) {
+            expression = this.visitJsx(ctx.jsx())
+        } else if (ctx.expression()) {
+            const child: ExpressionNode = this.visitExpression(ctx.expression())
+            expression = { type: 'ExpressionGroupNode', child: child }
+        }
+
+        return expression
+    }
+
+    visitReturnStatement = (ctx: ReturnStatementContext): ReturnStatementNode => {
+        let expression: FunctionInvocationNode | string | ExpressionNode
 
         if (ctx.expression()) {
-            returnValue = this.visitExpression(ctx.expression())
+            expression = this.visitExpression(ctx.expression())
         } else if (ctx.functionInvocation()) {
-            returnValue = this.visitFunctionInvocation(ctx.functionInvocation())
-        } else if (ctx.jsx()) {
-            returnValue = this.visitJsx(ctx.jsx())
+            expression = this.visitFunctionInvocation(ctx.functionInvocation())
         } else if (ctx.ID()) {
-            returnValue = ctx.ID().getText()
+            expression = ctx.ID().getText()
+        } else {
+            throw new Error('Invalid return statement context')
         }
 
-        const jsCode = `return ${returnValue}`
-        return jsCode
-    }
-
-    visitExpression = (ctx: ExpressionContext): string => {
-        let expressionCode = ''
-
-        const literalContext = ctx.literal()
-        if (literalContext) {
-            const numberToken = literalContext.NUMBER()
-            const stringToken = literalContext.STRING()
-            const booleanToken = literalContext.BOOLEAN()
-
-            if (numberToken) {
-                expressionCode = numberToken.getText()
-            } else if (stringToken) {
-                expressionCode = stringToken.getText()
-            } else if (booleanToken) {
-                expressionCode = booleanToken.getText()
-            }
-        } else if (ctx.ID()) {
-            expressionCode = ctx.ID().getText()
-        } else if (ctx.jsx()) {
-            expressionCode = this.visitJsx(ctx.jsx())
-        } else if (ctx instanceof ExpressionContext) {
-            const expressionCount = ctx.expression_list().length
-            for (let i = 0; i < expressionCount; i++) {
-                const subExpression = this.visitExpression(ctx.expression(i))
-                expressionCode += subExpression
-
-                if (i < expressionCount - 1) {
-                    expressionCode += ', '
-                }
-            }
+        return {
+            type: 'ReturnStatementNode',
+            expression
         }
-        return expressionCode
     }
 
-    visitJsx = (ctx: JsxContext): string => {
-        let content = ''
+    visitJsx = (ctx: JsxContext): JsxNode => {
         let tagName = ''
-        let tagContent = ''
-        let closingTagName = ''
+        const children: (LiteralNode | JsxNode | string)[] = []
 
         // Iterate over the children of the JsxContext
         const childCount = ctx.getChildCount()
@@ -203,51 +300,40 @@ export default class Visitor extends MyLanguageVisitor<string> {
 
             if (child instanceof JsxOpenContext) {
                 tagName = child.ID().getText()
-                tagContent = `'<${tagName}>'`
             } else if (child instanceof TerminalNode) {
-                const idContent = `'${this.visitID(child)}'`
-                if (closingTagName) {
-                    content += `,${idContent}`
-                    closingTagName = ''
-                } else {
-                    tagContent += ` ${idContent}`
-                    if (
-                        i < childCount - 1 &&
-            !(ctx.getChild(i + 1) instanceof JsxCloseContext)
-                    ) {
-                        tagContent += ' \' \''
-                    }
-                }
+                children.push(this.visitID(child))
             } else if (child instanceof JsxContext) {
-                tagContent += this.visitJsx(child)
-            } else if (child instanceof JsxCloseContext) {
-                closingTagName = child.ID().getText()
-                if (tagName !== closingTagName) {
-                    throw new Error(
-                        `Mismatched tags: opening tag is <${tagName}> but closing tag is </${closingTagName}>`,
-                    )
-                }
-                if (i < childCount - 1) {
-                    content += `${tagContent}' '`
-                } else {
-                    content += tagContent
-                }
-                tagContent = ''
-            } else if (
-                child instanceof TerminalNode &&
-        child.getText().trim() === ''
-            ) {
-                content += '\' \''
+                children.push(this.visitJsx(child))
             }
         }
 
-        const jsxCode = content
+        return {
+            type: 'JsxNode',
+            openingElement: { type: 'JsxOpeningElementNode', tagName },
+            closingElement: { type: 'JsxClosingElementNode', tagName },
+            tagName,
+            children
+        }
+    }
 
-        // const transformed = babel.transform(jsxCode, {
-        //     presets: ['@babel/preset-env']
-        // })
-        //
-        // const jsCode = transformed.code || ''
-        return jsxCode
+    visitLiteral = (ctx: any): LiteralNode | IdentifierNode => {
+        if (ctx.NUMBER()) {
+            return {
+                type: 'number',
+                value: Number(ctx.NUMBER().getText())
+            }
+        } else if (ctx.BOOLEAN()) {
+            return {
+                type: 'boolean',
+                value: ctx.BOOLEAN().getText() === 'true'
+            }
+        } else if (ctx.STRING()) {
+            return {
+                type: 'string',
+                value: ctx.STRING().getText().slice(1, -1)
+            }
+        } else {
+            throw new Error('Invalid literal context')
+        }
     }
 }

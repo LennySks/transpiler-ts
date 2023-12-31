@@ -3,13 +3,15 @@ grammar MyLanguage;
 root: memberDeclaration+;
 
 memberDeclaration:
-	variableDeclaration
+    importStatement
+	| variableDeclaration
 	| functionDeclaration
 	| functionInvocation
 	| returnStatement
 	| functionVarAssignment
 	| jsx;
 
+importStatement: 'import' '*' 'as' ID 'from' STRING;
 
 variableDeclaration: varType ID (':' returnType)? ('=' (literal | ID | functionInvocation))?;
 

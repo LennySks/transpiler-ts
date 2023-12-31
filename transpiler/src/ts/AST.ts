@@ -8,7 +8,14 @@ export interface RootNode extends ASTNode {
   members: MemberDeclarationNode[];
 }
 
+export interface NamespaceImportNode {
+  type: 'NamespaceImportNode';
+  alias: string; // e.g., 'React'
+  source: string; // e.g., 'react'
+}
+
 export type MemberDeclarationNode =
+  | NamespaceImportNode
   | VariableDeclarationNode
   | FunctionDeclarationNode
   | FunctionInvocationNode
@@ -70,7 +77,7 @@ export interface FunctionDeclarationNode extends ASTNode {
 export interface FunctionInvocationNode extends ASTNode {
   type: 'FunctionInvocationNode';
   functionName: string;
-  arguments: (LiteralNode | string)[];
+  arguments: (LiteralNode | IdentifierNode)[];
 }
 
 export interface ReturnStatementNode extends ASTNode {

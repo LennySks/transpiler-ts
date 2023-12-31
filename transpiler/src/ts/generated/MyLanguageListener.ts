@@ -5,6 +5,7 @@ import {ParseTreeListener} from "antlr4";
 
 import { RootContext } from "./MyLanguageParser";
 import { MemberDeclarationContext } from "./MyLanguageParser";
+import { ImportStatementContext } from "./MyLanguageParser";
 import { VariableDeclarationContext } from "./MyLanguageParser";
 import { ReturnStatementContext } from "./MyLanguageParser";
 import { ReturnTypeContext } from "./MyLanguageParser";
@@ -48,6 +49,16 @@ export default class MyLanguageListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	exitMemberDeclaration?: (ctx: MemberDeclarationContext) => void;
+	/**
+	 * Enter a parse tree produced by `MyLanguageParser.importStatement`.
+	 * @param ctx the parse tree
+	 */
+	enterImportStatement?: (ctx: ImportStatementContext) => void;
+	/**
+	 * Exit a parse tree produced by `MyLanguageParser.importStatement`.
+	 * @param ctx the parse tree
+	 */
+	exitImportStatement?: (ctx: ImportStatementContext) => void;
 	/**
 	 * Enter a parse tree produced by `MyLanguageParser.variableDeclaration`.
 	 * @param ctx the parse tree
