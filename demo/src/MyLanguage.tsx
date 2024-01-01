@@ -1,19 +1,13 @@
-let myNumber = 10
-let myString = 'Hello, console!'
-let myBoolean = true
+import * as React from 'react'
+import * as ReactDOM from 'react-dom'
 
-function myFunction(a: number, b: string, c: boolean) {
-    myNumber = a
-    myString = b
-    myBoolean = c
-}
+const myNumber = 10
+const myString = 'Hello, console!'
+const myBoolean = true
 
-// #TODO: fix this multiple things in
 
-// (myString, myNumber, myBoolean)
-myFunction(3, 'Goodbye, world!', false)
+console.log(myString)
 
-// (myString, myNumber, myBoolean)
 
 function App() {
     return (
@@ -21,5 +15,6 @@ function App() {
     )
 }
 
-const result = App()
-document.body.innerHTML = result
+const html = App()
+const root = document.getElementById('root')
+ReactDOM.render(html, root)

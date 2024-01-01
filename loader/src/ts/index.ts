@@ -1,7 +1,5 @@
-import compiler from 'transpiler/'
+import {compile} from 'transpiler'
 
-export default function loader(source) {
-    return compiler(source)
+export default function loader(source: string) {
+    return compile(source)
 }
-
-module.exports = loader
