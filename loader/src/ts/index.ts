@@ -1,5 +1,7 @@
-import {parseSourceCode} from 'transpiler'
+import compiler from 'transpiler/'
 
-export default function loader(source: string) {
-    return parseSourceCode(source)
+export default function loader(source) {
+    return compiler(source)
 }
+
+module.exports = loader

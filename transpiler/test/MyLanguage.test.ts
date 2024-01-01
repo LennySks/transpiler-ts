@@ -1,7 +1,7 @@
 import * as fs from 'fs'
 import * as path from 'path'
 import { compiler } from '../src/ts/compiler'
-import { parseSourceCode } from '../src/ts'
+import { parseSourceCode } from '../src/ts/Parser'
 
 describe('MyLanguageVisitor', () => {
     test('should test testFileVariable', () => {

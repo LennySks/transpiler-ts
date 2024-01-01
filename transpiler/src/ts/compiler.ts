@@ -14,10 +14,9 @@ import {
     RootNode,
     VariableDeclarationNode
 } from './AST'
-import { parseSourceCode } from './index'
+import { parseSourceCode } from './Parser'
 
 export function compiler(input: string): string {
-    // const returnString = ''
     const ast = parseSourceCode(input) as RootNode
     const generatedCode = generateCode(ast.members)
     console.log(generatedCode)
@@ -53,7 +52,7 @@ function generateMemberCode(member: MemberDeclarationNode): string {
 function generateVariableDeclarationCode(
     variableDeclaration: VariableDeclarationNode,
 ): string {
-    const varType = variableDeclaration.varType
+    const varType = variableDeclaration.varType // 'let', 'const', or 'var'
     const variableName = variableDeclaration.variableName.value
     const value = generateValueCode(variableDeclaration.value)
 
