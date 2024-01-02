@@ -2,7 +2,7 @@ import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 
 const myNumber = 10
-const myString = 'Hello, console!'
+const myString = 'Hello console!'
 const myBoolean = true
 
 function logger(message: string) {

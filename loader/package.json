@@ -1,5 +1,5 @@
 {
-  "name": "loader",
+  "name": "mylang-loader",
   "version": "1.1.1",
   "private": true,
   "author": "David Pietrzak",
@@ -18,7 +18,7 @@
     "jest": "^28.1.3",
     "ts-jest": "^28.0.8",
     "typescript": "^4.8.2",
-    "transpiler": "file:../transpiler"
+    "mylang-transpiler": "file:../transpiler"
   },
   "scripts": {
     "build": "babel src --extensions \".ts,.tsx\" -d dist",

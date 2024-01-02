@@ -21,7 +21,7 @@ module.exports = {
             },
             {
                 test: /\.tsx$/,
-                loader: 'loader'
+                loader: 'mylang-loader'
             },
             {
                 enforce: 'pre',
