@@ -18,4 +18,5 @@ function App() {
 }
 
 const html = App()
-ReactDOM.render(html, document.getElementById('root'))
+const root = document.getElementById('root')
+ReactDOM.render(html, root)

@@ -25,18 +25,21 @@ Volg deze stappen in de gegeven volgorde om de projecten te bouwen:
 
 1. **Transpiler Bouwen**
    ```shell
+   cd transpiler
    npm install
    npm run build
    ```
 
 2. **Loader Bouwen**
    ```shell
+   cd ../loader
    npm install
    npm run build
    ```
 
-3. **Demo-applicatie Bouwen En Starten**
+3. **Demo-applicatie Bouwen**
    ```shell
+   cd ../demo
    npm install
    ```
 
@@ -44,13 +47,13 @@ Volg deze stappen in de gegeven volgorde om de projecten te bouwen:
 
 Na dat u de projecten heeft gebouwd, kunt u de volgende commando's uitvoeren:
 
-- Op Demo-applicatie
+- Op Demo-applicatie (in de demo map)
 
 ```shell
 npm run start
 ```
 
-- De testen op Transpiler
+- De testen op Transpiler (in de transpiler map)
 
 ```shell
 npm run test
@@ -63,20 +66,14 @@ import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 
 let myNumber = 10
-let myString = 'Hello, console!'
+let myString = 'Hello console!'
 let myBoolean = true
 
-function myFunction(a: number, b: string, c: boolean) {
-    myNumber = a
-    myString = b
-    myBoolean = c
+function logger(message: string) {
+    return console.warn(message)
 }
 
-console.log(myNumber, myString, myBoolean)
-
-myFunction(3, 'Goodbye, world!', false)
-
-console.log(myNumber, myString, myBoolean)
+logger('ERROR 404')
 
 function App() {
     return (
@@ -84,36 +81,33 @@ function App() {
     )
 }
 
-const tsx = App()
-const root = document.getElementById('root')
-ReactDOM.render(tsx, root)
+const html = App()
+ReactDOM.render(html, document.getElementById('root'))
 ```
 
 ## Compilatie-uitvoer
 
 ```javascript
-import * as React from 'react'
-import * as ReactDOM from 'react-dom'
+import * as React from "react";
+import * as ReactDOM from "react-dom";
 
-let myNumber = 10
-let myString = 'Hello, console!'
-let myBoolean = true
+const myNumber = 10
+const myString = "Hello console!"
+const myBoolean = true
 
-function changeValues(a, b, c) {
-    myNumber = a
-    myString = b
-    myBoolean = c
+function logger(message) {
+    return console.warn(message)
 }
 
-changeValues(20, 'Goodbye, world!', false)
+logger("ERROR 404");
 
 function App() {
-    return React.createElement("h1", null, "Hallo, ", React.createElement("strong", null, "wereld"), "!")
+    return (React.createElement("h1", null, React.createElement("strong", null, 'This'), React.createElement("i", null, 'is'), 'a', 'text', React.createElement("u", null, 'with', React.createElement("i", null, 'underlining'))))
 }
 
-const tsx = App()
-const root = document.getElementById('root')
-ReactDOM.render(tsx, root)
+const html = App()
+const root = document.getElementById("root")
+ReactDOM.render(html, root);
 ```
 
 ## EBNF Grammaticabeschrijving
