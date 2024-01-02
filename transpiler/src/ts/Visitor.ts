@@ -6,6 +6,7 @@ import {
     ImportStatementContext,
     JsxContext,
     JsxOpenContext,
+    LiteralContext,
     MemberDeclarationContext,
     ObjectPropertyAccessContext,
     ParameterContext,
@@ -292,7 +293,6 @@ export default class Visitor extends MyLanguageVisitor<ASTNode> {
     visitJsx = (ctx: JsxContext): JsxNode => {
         let tagName = ''
         const children: (LiteralNode | JsxNode | string)[] = []
-
         // Iterate over the children of the JsxContext
         const childCount = ctx.getChildCount()
         for (let i = 0; i < childCount; i++) {
@@ -300,6 +300,8 @@ export default class Visitor extends MyLanguageVisitor<ASTNode> {
 
             if (child instanceof JsxOpenContext) {
                 tagName = child.ID().getText()
+            } else if (child instanceof LiteralContext) {
+                children.push(this.visitLiteral(child))
             } else if (child instanceof TerminalNode) {
                 children.push(this.visitID(child))
             } else if (child instanceof JsxContext) {
@@ -316,7 +318,7 @@ export default class Visitor extends MyLanguageVisitor<ASTNode> {
         }
     }
 
-    visitLiteral = (ctx: any): LiteralNode | IdentifierNode => {
+    visitLiteral = (ctx: any): LiteralNode => {
         if (ctx.NUMBER()) {
             return {
                 type: 'number',

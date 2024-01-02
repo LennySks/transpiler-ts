@@ -5,9 +5,11 @@ const myNumber = 10
 const myString = 'Hello, console!'
 const myBoolean = true
 
+function logger(message: string) {
+    return console.warn(message)
+}
 
-console.log(myString)
-
+logger('ERROR 404')
 
 function App() {
     return (
@@ -16,5 +18,4 @@ function App() {
 }
 
 const html = App()
-const root = document.getElementById('root')
-ReactDOM.render(html, root)
+ReactDOM.render(html, document.getElementById('root'))

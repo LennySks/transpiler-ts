@@ -19,7 +19,7 @@ import { parseSourceCode } from './Parser'
 export function compiler(input: string): string {
     const ast = parseSourceCode(input) as RootNode
     const generatedCode = generateCode(ast.members)
-    console.log(generatedCode)
+    // console.log(generatedCode)
     return generatedCode
 }
 
@@ -56,7 +56,7 @@ function generateVariableDeclarationCode(
     const variableName = variableDeclaration.variableName.value
     const value = generateValueCode(variableDeclaration.value)
 
-    return `${varType} ${variableName} = ${value};`
+    return `${varType} ${variableName} = ${value}`
 }
 
 function generateValueCode(
@@ -72,7 +72,6 @@ function generateValueCode(
                 return JSON.stringify(value.value)
             case 'IdentifierNode':
                 return value.value
-                // Add more cases here as you implement more node types
             default:
                 throw new Error(`Unsupported value type: ${(value as any).type}`)
         }
@@ -82,7 +81,6 @@ function generateValueCode(
             .join(', ')
         return `${value.functionName}(${args})`
     } else if ('child' in value) {
-    // Handle ExpressionNode type here
     } else {
         throw new Error('Unsupported value type')
     }
@@ -104,8 +102,7 @@ function generateParameterListCode(parameters: ParameterNode[]): string {
 }
 
 function generateParameterCode(parameter: ParameterNode): string {
-    const { parameterName, returnType } = parameter
-    return `${parameterName}: ${returnType}`
+    return parameter.parameterName
 }
 
 function generateFunctionInvocationCode(
@@ -131,12 +128,10 @@ function generateReturnStatementCode(member: ReturnStatementNode): string {
     const { expression } = member
 
     if (typeof expression === 'string') {
-    // Handle return statement with a plain identifier
         return `return ${expression};`
     } else {
-    // Handle return statement with an expression (including JSX)
         const expressionCode = generateExpressionCode(expression)
-        return `return ${expressionCode};`
+        return `return ${expressionCode}`
     }
 }
 
@@ -152,7 +147,6 @@ function generateExpressionCode(
     } else if (expression.type === 'ExpressionGroupNode') {
         return `(${generateExpressionCode(expression.child)})`
     } else {
-    // Handle other types of expressions
         return generateValueCode(expression)
     }
 }
@@ -167,19 +161,15 @@ function generateJsxCode(member: JsxNode): string {
     const childrenCode = children
         .map((child) => {
             if (typeof child === 'string') {
-                // Plain text
-                return JSON.stringify(child)
+                return `'${child}'`
             } else if (child.type === 'JsxNode') {
-                // Nested JSX element
                 return generateJsxCode(child)
             } else {
-                // Other types of children (like expressions)
-                return generateExpressionCode(child)
+                return generateValueCode(child)
             }
         })
         .join(', ')
 
-    // Return the React.createElement call
     return `React.createElement("${tagName}", null, ${childrenCode})`
 }
 
@@ -189,5 +179,5 @@ function generateFunctionVarAssignmentCode(
     const { variableName, expression } = member
     const expressionCode = generateValueCode(expression)
 
-    return `${variableName} = ${expressionCode};`
+    return `${variableName} = ${expressionCode}`
 }

@@ -9,7 +9,7 @@ describe('MyLanguageVisitor', () => {
             path.join(__dirname, 'testFileVariable.myLanguage'),
             'utf-8',
         )
-        compiler(input)
+        parseSourceCode(input)
     })
 
     test('should test testFileFunctions', () => {

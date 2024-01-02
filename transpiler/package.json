@@ -20,7 +20,7 @@
     "typescript": "^4.8.2"
   },
   "scripts": {
-    "build": "babel src --extensions \".ts,.tsx\" -d dist",
+    "build": "babel src --extensions \".ts\" -d dist",
     "test": "jest",
     "antlrWin": "java -cp antlr-4.13.1-complete.jar org.antlr.v4.Tool -o ./src/ts/generated/ -visitor -Dlanguage=TypeScript ./src/g4/MyLanguage.g4",
     "antlr": "cd src/g4 && java -cp /lib/antlr-4.13.1-complete.jar org.antlr.v4.Tool -o ../ts/generated -visitor -Dlanguage=TypeScript MyLanguage.g4"
