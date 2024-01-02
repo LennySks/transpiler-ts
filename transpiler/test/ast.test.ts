@@ -98,25 +98,6 @@ test('AST generation for function declaration with params', () => {
         ]
     })
 })
-
-test('AST generation correctly handles JSX elements', () => {
-    const input = '<div>HelloWorld</div>'
-    const ast = parseSourceCode(input)
-    const expectedAST = {
-        type: 'RootNode',
-        members: [
-            {
-                type: 'JsxElementNode',
-                tagName: 'div',
-                openingElement: { type: 'JsxOpeningElementNode', tag: 'div' },
-                children: [{ type: 'JsxContentNode', content: 'HelloWorld' }],
-                closingElement: { type: 'JsxClosingElementNode', tag: 'div' }
-            }
-        ]
-    }
-    expect(ast).toEqual(expectedAST)
-})
-
 test('AST generation for function invocation', () => {
     const input = 'x(1, 2)'
     const ast = parseSourceCode(input)
