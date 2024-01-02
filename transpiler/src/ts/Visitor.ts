@@ -4,6 +4,7 @@ import {
     FunctionInvocationContext,
     FunctionVarAssignmentContext,
     ImportStatementContext,
+    JsxCloseContext,
     JsxContext,
     JsxOpenContext,
     LiteralContext,
@@ -291,15 +292,17 @@ export default class Visitor extends MyLanguageVisitor<ASTNode> {
     }
 
     visitJsx = (ctx: JsxContext): JsxNode => {
-        let tagName = ''
+        let openingTag = ''
+        let closingTag
         const children: (LiteralNode | JsxNode | string)[] = []
-        // Iterate over the children of the JsxContext
         const childCount = ctx.getChildCount()
         for (let i = 0; i < childCount; i++) {
             const child = ctx.getChild(i)
 
             if (child instanceof JsxOpenContext) {
-                tagName = child.ID().getText()
+                openingTag = child.ID().getText()
+            } else if (child instanceof JsxCloseContext) {
+                closingTag = child.ID().getText()
             } else if (child instanceof LiteralContext) {
                 children.push(this.visitLiteral(child))
             } else if (child instanceof TerminalNode) {
@@ -309,11 +312,17 @@ export default class Visitor extends MyLanguageVisitor<ASTNode> {
             }
         }
 
+        if (openingTag !== closingTag) {
+            throw new Error(
+                `JSX tags mismatch: <${closingTag}> does not match </${openingTag}>`,
+            )
+        }
+
         return {
             type: 'JsxNode',
-            openingElement: { type: 'JsxOpeningElementNode', tagName },
-            closingElement: { type: 'JsxClosingElementNode', tagName },
-            tagName,
+            openingElement: { type: 'JsxOpeningElementNode', tagName: openingTag },
+            closingElement: { type: 'JsxClosingElementNode', tagName: closingTag },
+            tagName: openingTag,
             children
         }
     }

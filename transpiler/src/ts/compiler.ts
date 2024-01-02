@@ -60,16 +60,27 @@ function generateVariableDeclarationCode(
 }
 
 function generateValueCode(
-    value: LiteralNode | IdentifierNode | functionCall | string | ExpressionNode,
+    value:
+    | LiteralNode
+    | IdentifierNode
+    | functionCall
+    | string
+    | ExpressionNode
+    | undefined,
 ): string {
+    if (value === undefined) {
+        throw new Error('Value is undefined')
+    }
     if (typeof value === 'string') {
         return value
     } else if ('type' in value && 'value' in value) {
         switch (value.type) {
             case 'number':
+                return value.value.toString()
             case 'string':
+                return value.value.toString()
             case 'boolean':
-                return JSON.stringify(value.value)
+                return value.value.toString()
             case 'IdentifierNode':
                 return value.value
             default:
@@ -81,6 +92,7 @@ function generateValueCode(
             .join(', ')
         return `${value.functionName}(${args})`
     } else if ('child' in value) {
+        return generateExpressionCode(value)
     } else {
         throw new Error('Unsupported value type')
     }
@@ -130,7 +142,7 @@ function generateReturnStatementCode(member: ReturnStatementNode): string {
     if (typeof expression === 'string') {
         return `return ${expression};`
     } else {
-        const expressionCode = generateExpressionCode(expression)
+        const expressionCode = generateValueCode(expression)
         return `return ${expressionCode}`
     }
 }
