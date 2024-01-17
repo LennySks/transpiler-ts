@@ -21,7 +21,6 @@ import { TerminalNode } from 'antlr4'
 import {
     ASTNode,
     ExpressionNode,
-    functionCall,
     FunctionDeclarationNode,
     FunctionInvocationNode,
     FunctionVarAssignmentNode,
@@ -99,7 +98,7 @@ export default class Visitor extends MyLanguageVisitor<ASTNode> {
             type: 'IdentifierNode',
             value: ids[0].getText()
         }
-        let value: LiteralNode | IdentifierNode | functionCall
+        let value: LiteralNode | IdentifierNode | FunctionInvocationNode
 
         const literalContext = ctx.literal()
         const functionCallContext = ctx.functionInvocation()
@@ -110,10 +109,9 @@ export default class Visitor extends MyLanguageVisitor<ASTNode> {
             const functionInvocation =
         this.visitFunctionInvocation(functionCallContext)
             value = {
+                type: 'FunctionInvocationNode', // TODO: Fixed so it uses the correct type
                 functionName: functionInvocation.functionName,
-                arguments: functionInvocation.arguments.map((arg) =>
-                    arg.type === 'IdentifierNode' ? arg.value : arg,
-                )
+                arguments: functionInvocation.arguments
             }
         } else if (ids.length > 1) {
             value = { type: 'IdentifierNode', value: ids[1].getText() }
@@ -161,7 +159,7 @@ export default class Visitor extends MyLanguageVisitor<ASTNode> {
 
         return {
             type: 'ObjectPropertyAccessNode',
-            properties
+            properties: properties
         }
     }
 
@@ -216,7 +214,7 @@ export default class Visitor extends MyLanguageVisitor<ASTNode> {
         if (ctx.argumentList()) {
             const argumentContexts = ctx.argumentList().children
             for (const argumentContext of argumentContexts) {
-                // Remove the commas that come by using argumentList().children
+                // Remove the commas that come by using argumentList().children (i get more children than just the arguments)
                 if (argumentContext.getText() !== ',') {
                     if (argumentContext instanceof TerminalNode) {
                         argumentsList.push({
@@ -232,7 +230,7 @@ export default class Visitor extends MyLanguageVisitor<ASTNode> {
 
         return {
             type: 'FunctionInvocationNode',
-            functionName,
+            functionName: functionName,
             arguments: argumentsList
         }
     }
@@ -244,8 +242,8 @@ export default class Visitor extends MyLanguageVisitor<ASTNode> {
 
         return {
             type: 'ParameterNode',
-            parameterName,
-            returnType
+            parameterName: parameterName,
+            returnType: returnType
         }
     }
 

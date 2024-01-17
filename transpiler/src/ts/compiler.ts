@@ -93,6 +93,9 @@ function generateValueCode(
         return `${value.functionName}(${args})`
     } else if ('child' in value) {
         return generateExpressionCode(value)
+    } else if ('properties' in value) {
+    // TODO: Added this to support object property access
+        return value.properties.join('.')
     } else {
         throw new Error('Unsupported value type')
     }

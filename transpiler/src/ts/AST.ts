@@ -27,7 +27,7 @@ export interface VariableDeclarationNode extends ASTNode {
   type: 'VariableDeclarationNode';
   varType: VarType;
   variableName: IdentifierNode;
-  value: LiteralNode | IdentifierNode | functionCall;
+  value: LiteralNode | IdentifierNode | FunctionInvocationNode;
 }
 
 export type functionCall = {
